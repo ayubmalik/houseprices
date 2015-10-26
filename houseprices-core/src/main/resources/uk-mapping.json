@@ -1,0 +1,22 @@
+{
+  "uk":{
+    "_id": {
+      "path": "id"
+    },
+    "properties":{
+      "id" : { "type":"string"},
+      "price" : { "type": "integer"},
+      "dateOfTransfer" : { "type": "date", "format": "YYYY-MM-dd HH:mm" },
+      "postcode" : { "type": "string"},
+      "propertyType" : { "type": "string"},
+      "oldNew" : { "type": "string"},
+      "duration" : { "type": "string"},
+      "paon" : { "type": "string"},
+      "saon" : { "type": "string"},
+      "street" : { "type": "string"},
+      "locality" : { "type": "string"},
+      "townCity" : { "type": "string"},
+      "district" : { "type": "string"}
+      }
+  }
+}

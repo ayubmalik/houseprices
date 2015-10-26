@@ -1,11 +1,13 @@
 name := """houseprices-core"""
 
 libraryDependencies ++= {
-  val scalaTestVersion  = "2.2.4"
-  val akkaVersion       = "2.4.0"
-  val akkaStreamVersion = "1.0"
+  val elasticSearchVersion = "1.7.3"
+  val akkaVersion          = "2.4.0"
+  val akkaStreamVersion    = "1.0"
+  val scalaTestVersion     = "2.2.4"
 
   Seq(
+    "org.elasticsearch" %  "elasticsearch"                        % elasticSearchVersion,
     "com.typesafe.akka" %% "akka-actor"                           % akkaVersion,
     "com.typesafe.akka" %% "akka-stream-experimental"             % akkaStreamVersion,
     "com.typesafe.akka" %% "akka-http-core-experimental"          % akkaStreamVersion,

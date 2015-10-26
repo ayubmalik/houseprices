@@ -9,8 +9,10 @@ val commonSettings = Seq(
   EclipseKeys.withSource := true
 )
 
-lazy val core = project.in(file("houseprices-core")).settings(commonSettings:_*)
+lazy val core = project.in(file("houseprices-core"))
+  .settings(commonSettings:_*)
 
-lazy val main = project.in(file(".")).aggregate(core)
+lazy val main = project.in(file("."))
+  .aggregate(core)
   .settings(commonSettings:_*)
 

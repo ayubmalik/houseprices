@@ -1,4 +1,4 @@
-package houseprices.es
+package houseprices.elasticsearch
 
 import org.scalatest.FlatSpec
 

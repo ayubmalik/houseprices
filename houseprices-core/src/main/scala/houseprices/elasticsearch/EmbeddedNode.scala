@@ -12,14 +12,15 @@ import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
 import org.elasticsearch.common.settings.ImmutableSettings
 import org.elasticsearch.node.NodeBuilder
 
-
 class EmbeddedNode(settings: Map[String, String]) {
 
   val settingsWithDefaults = (settings.keySet ++ EmbeddedNode.defaultSettings.keySet).map { key =>
     key -> settings.getOrElse(key, EmbeddedNode.defaultSettings(key))
   } toMap
 
-  val dataPath = settingsWithDefaults.getOrElse("path.data", Files.createTempDirectory("tmpHousePrices-").toString)
+  val tmpDir = Files.createTempDirectory("tmpHousePrices-").toString
+  println("tmp = " + tmpDir)
+  val dataPath = settingsWithDefaults.getOrElse("path.data", tmpDir)
 
   import scala.collection.JavaConversions.mapAsJavaMap
   val settingsBuilder = ImmutableSettings.builder().put(mapAsJavaMap(settingsWithDefaults))

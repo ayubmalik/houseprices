@@ -1,9 +1,28 @@
 package houseprices.csv
 
 import org.parboiled2.ParserInput
+import houseprices.PricePaid
+import houseprices.Address
 
 class PricePaidCsv(val input: ParserInput) extends CSVParboiledParser with CSVParserIETFAction {
-  def parse(): List[List[String]] = csvfile.run().get
+  def parse(): List[PricePaid] = {
+    val rows = csvfile.run().get
+    val prices = rows.map { fields =>
+      val id = fields(0)
+      val price = fields(1).toInt
+      val date = fields(2)
+      val postcode = fields(3)
+      val primary = fields(7)
+      val secondary = fields(8)
+      val street = fields(9)
+      val locality = fields(10)
+      val town = fields(11)
+      val district = fields(12)
+      val county = fields(13)
+      PricePaid(id, price, date, Address(postcode, primary, secondary, street, locality, town, district, county))
+    }
+    prices
+  }
 }
 
 object PricePaidCsvApp {

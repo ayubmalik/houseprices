@@ -1,0 +1,24 @@
+{
+  "uk":{
+    "_id": {
+      "path": "id"
+    },
+    "properties":{
+      "id" : { "type":"string"},
+      "price" : { "type": "integer"},
+      "dateOfTransfer" : { "type": "date", "format": "YYYY-MM-dd HH:mm" },
+      "address": { 
+        "type":"nested", 
+        "properties": {
+          "postcode" : { "type": "string"},
+          "primaryName" : { "type": "string"},
+          "secondaryName" : { "type": "string"},
+          "street" : { "type": "string"},
+          "locality" : { "type": "string"},
+          "townCity" : { "type": "string"},
+          "district" : { "type": "string"}
+        }
+      }   
+    }
+  }
+}

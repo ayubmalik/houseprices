@@ -1,4 +1,4 @@
-package houseprices.es
+package houseprices.elasticsearch
 
 import org.elasticsearch.action.ActionResponse
 import org.elasticsearch.action.ActionListener

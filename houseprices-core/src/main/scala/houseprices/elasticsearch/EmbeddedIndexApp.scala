@@ -1,4 +1,4 @@
-package houseprices.es
+package houseprices.elasticsearch
 
 import java.nio.file.Files
 import java.nio.file.Paths

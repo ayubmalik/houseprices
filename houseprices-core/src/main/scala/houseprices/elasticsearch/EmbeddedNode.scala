@@ -1,4 +1,4 @@
-package houseprices.es
+package houseprices.elasticsearch
 
 import java.nio.file.Files
 import java.nio.file.SimpleFileVisitor
@@ -8,6 +8,9 @@ import java.nio.file.Paths
 import java.nio.file.FileVisitResult
 import org.elasticsearch.common.settings.ImmutableSettings
 import org.elasticsearch.node.NodeBuilder
+
+import houseprices.elasticsearch.EmbeddedNode;
+
 import java.nio.file.Path
 import org.elasticsearch.cluster.metadata.MetaDataDeleteIndexService.Request
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest

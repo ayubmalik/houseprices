@@ -13,18 +13,20 @@ trait EsClientBuilder {
       .put("node.name", "node." + this.clusterName)
 
     NodeBuilder.nodeBuilder()
+      .local(this.isLocal)
       .clusterName(clusterName)
       .settings(settings)
       .build()
-      .client()
+        .start()
+        .client()
   }
 }
 
 object EsClientBuilder {
   def build(env: String = "dev"): Client = {
     env match {
-      case "qa" => new EsClientBuilder with QaEsConfig build
-      case _ => new EsClientBuilder with DevEsConfig build
+      case "qa" => new EsClientBuilder with QaConfig build
+      case _ => new EsClientBuilder with DevConfig build
     }
   }
 }

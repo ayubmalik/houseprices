@@ -16,6 +16,12 @@ class elasticsearch($clusterName = "dwpelasticsearch") {
     name => "elasticsearch"
   }
 
+  file { "add custom sysconfig file": 
+    ensure => present,
+    path => "/etc/sysconfig/elasticsearch",
+    source => "puppet:///modules/elasticsearch/elasticsearch/sysconfig/elasticsearch"
+  }
+  ~>
   service { "elasticsearch":
     ensure  => running,
     require => [
@@ -23,3 +29,4 @@ class elasticsearch($clusterName = "dwpelasticsearch") {
     ]
   }
 }
+

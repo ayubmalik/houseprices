@@ -1,13 +1,12 @@
-package houseprices.elasticsearch
+package houseprices
 
 import scala.io.Source
 import org.elasticsearch.action.bulk.BulkProcessor
-import org.elasticsearch.client.Client
-import org.elasticsearch.action.bulk.BulkRequest
-import org.elasticsearch.action.bulk.BulkResponse
 import houseprices.csv.PricePaidCsv
-import houseprices.PricePaidToJson
 import org.elasticsearch.action.index.IndexRequest
+import houseprices.elasticsearch.NoopListener
+import org.parboiled2.ParserInput.apply
+import houseprices.elasticsearch.EmbeddedNode
 
 object CreatePricePaidIndexApp {
 

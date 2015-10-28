@@ -8,4 +8,5 @@ target
 .settings
 .DS_Store
 **/data
+**/.vagrant
 

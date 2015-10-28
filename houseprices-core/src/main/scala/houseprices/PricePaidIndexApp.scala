@@ -14,22 +14,24 @@ object PricePaidIndexApp {
 
   def main(args: Array[String]): Unit = {
 
+    println("Creating client")
     val client = EsClientBuilder.build()
-    
-    val mappingJsonSource = Source.fromFile("src/main/resources/pricepaid-uk-es-mapping.json").getLines().mkString
-    
-    new CreateIndex(client, "pricepaid", "uk", Some(mappingJsonSource)).create()
-    
-    /*
-    val bp: BulkProcessor = BulkProcessor.builder(es.client(), NoopListener).setBulkActions(10).build()
 
-    println("Starting export")
+    println("Creating index")
+    val mappingJsonSource = Source.fromFile("src/main/resources/pricepaid-uk-es-mapping.json").getLines().mkString
+    new CreateIndex(client, "pricepaid", "uk", Some(mappingJsonSource)).create()
+
+    println("Parsing CSV data")
     val prices = new PricePaidCsv(io.Source.fromFile("src/main/resources/pp-2015-part1.csv").mkString).parse()
+
+    println("Starting bulk add")
+    val bulk = BulkProcessor.builder(client, NoopListener).setBulkActions(10).build()
+    
     prices.take(100).map { pp =>
       val src = PricePaidToJson(pp)
-      bp.add(new IndexRequest("pricepaid", "uk", pp.id).source(src))
+      bulk.add(new IndexRequest("pricepaid", "uk", pp.id).source(src))
     }
-    */
+
   }
 
 }

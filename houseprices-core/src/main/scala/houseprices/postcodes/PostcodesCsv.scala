@@ -10,18 +10,18 @@ class PostcodesCsv(val input: ParserInput) extends CSVParboiledParser with CSVPa
     val rows = csvfile.run().get
     rows.map { fields =>
       val postcode = fields(1)
-      val lat = fields(2)
-      val lng = fields(3)
+      val lat = fields(2).toDouble
+      val lng = fields(3).toDouble
       PostcodeLatLng(Postcode(postcode), LatLng(lat, lng))
     }
   }
 }
 
-object PricePaidCsvApp {
+object PostcodesCsvApp {
 
   def main(args: Array[String]): Unit = {
-    val csvFile = "src/main/resources/pp-2015-part1.csv"
-    val rows = new PostcodesCsv(io.Source.fromFile(csvFile).mkString).parse()
-    println(rows.size)
+    val csvFile = ClasspathSource("ukpostcodes.cleaned.csv")
+    val rows = new PostcodesCsv(csvFile.mkString).parse()
+    println(rows(2))
   }
 }

@@ -8,6 +8,7 @@
       "price" : { "type": "integer"},
       "date" : { "type": "date", "format": "YYYY-MM-dd HH:mm" },
       "address": { 
+        "type": "nested",
         "properties": {
           "postcode" : { "type": "string"},
           "primaryName" : { "type": "string"},

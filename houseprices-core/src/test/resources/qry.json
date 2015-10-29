@@ -1,7 +1,7 @@
 {
-  "_source":["id","address.townCity"],
+  "_source":["id","address.townCity", "address.postcode"],
   "size": 5,
   "query": {
-    "match" : { "price": 101000 }
+    "match" : { "address.postcode": "M21 0YB" }
   }
 }

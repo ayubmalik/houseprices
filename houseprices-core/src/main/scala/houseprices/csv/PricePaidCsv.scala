@@ -7,7 +7,7 @@ import houseprices.Address
 class PricePaidCsv(val input: ParserInput) extends CSVParboiledParser with CSVParserIETFAction {
   def parse(): List[PricePaid] = {
     val rows = csvfile.run().get
-    val prices = rows.map { fields =>
+    rows.map { fields =>
       val id = fields(0)
       val price = fields(1).toInt
       val date = fields(2)
@@ -21,7 +21,6 @@ class PricePaidCsv(val input: ParserInput) extends CSVParboiledParser with CSVPa
       val county = fields(13)
       PricePaid(id, price, date, Address(postcode, primary, secondary, street, locality, town, district, county))
     }
-    prices
   }
 }
 

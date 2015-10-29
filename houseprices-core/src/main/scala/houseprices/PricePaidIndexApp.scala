@@ -1,14 +1,15 @@
 package houseprices
 
 import scala.io.Source
+
 import org.elasticsearch.action.bulk.BulkProcessor
-import houseprices.csv.PricePaidCsv
 import org.elasticsearch.action.index.IndexRequest
-import houseprices.elasticsearch.NoopListener
 import org.parboiled2.ParserInput.apply
-import houseprices.elasticsearch.EmbeddedNode
-import houseprices.elasticsearch.config.EsClientBuilder
+
+import houseprices.csv.PricePaidCsv
 import houseprices.elasticsearch.CreateIndex
+import houseprices.elasticsearch.NoopListener
+import houseprices.elasticsearch.config.EsClientBuilder
 
 object PricePaidIndexApp {
 
@@ -26,7 +27,7 @@ object PricePaidIndexApp {
 
     println("Starting bulk add")
     val bulk = BulkProcessor.builder(client, NoopListener).setBulkActions(100).build()
-    
+
     prices.map { pp =>
       val src = PricePaidToJson(pp)
       bulk.add(new IndexRequest("pricepaid", "uk", pp.id).source(src))

@@ -1,0 +1,7 @@
+{
+  "_source":["id","address.townCity"],
+  "size": 5,
+  "query": {
+    "match" : { "price": 101000 }
+  }
+}

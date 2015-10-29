@@ -20,7 +20,7 @@ object PricePaidIndexApp {
 
     println("Creating index")
     val mappingJsonSource = Source.fromFile("src/main/resources/pricepaid-uk-es-mapping.json").getLines.mkString
-    new CreateIndex(client, "pricepaid", "uk", Some(mappingJsonSource)).createIfNotExists
+    new CreateIndex(client, "pricepaid", "uk", Some(mappingJsonSource)).recreate
 
     println("Parsing CSV data")
     val prices = new PricePaidCsv(io.Source.fromFile("src/main/resources/pp-2015-part1.csv").mkString).parse

@@ -12,7 +12,7 @@ class PostcodesCsv(val input: ParserInput) extends CSVParboiledParser with CSVPa
       val postcode = fields(1)
       val lat = fields(2).toDouble
       val lng = fields(3).toDouble
-      PostcodeLatLng(Postcode(postcode), LatLng(lat, lng))
+      PostcodeLatLng(Postcode(postcode), LatLon(lat, lng))
     }
   }
 }

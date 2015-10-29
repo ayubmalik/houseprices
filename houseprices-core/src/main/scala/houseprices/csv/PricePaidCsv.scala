@@ -3,7 +3,7 @@ package houseprices.csv
 import org.parboiled2.ParserInput
 import houseprices.PricePaid
 import houseprices.Address
-import houseprices.postcodes.LatLng
+import houseprices.postcodes.LatLon
 
 class PricePaidCsv(val input: ParserInput) extends CSVParboiledParser with CSVParserIETFAction {
   def parse(): List[PricePaid] = {
@@ -20,7 +20,7 @@ class PricePaidCsv(val input: ParserInput) extends CSVParboiledParser with CSVPa
       val town = fields(11)
       val district = fields(12)
       val county = fields(13)
-      PricePaid(id, price, date, Address(postcode, primary, secondary, street, locality, town, district, county, LatLng(0, 0)))
+      PricePaid(id, price, date, Address(postcode, primary, secondary, street, locality, town, district, county, LatLon(0, 0)))
     }
   }
 }

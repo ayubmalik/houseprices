@@ -24,6 +24,7 @@ class elasticsearch($clusterName = "dwpelasticsearch") {
   ~>
   service { "elasticsearch":
     ensure  => running,
+    enable => true,
     require => [
       Package["elasticsearch"]
     ]

@@ -25,7 +25,7 @@ object PricePaidIndexApp {
     val prices = new PricePaidCsv(io.Source.fromFile("src/main/resources/pp-2015-part1.csv").mkString).parse
 
     println("Starting bulk add")
-    val bulk = BulkProcessor.builder(client, NoopListener).setBulkActions(10).build()
+    val bulk = BulkProcessor.builder(client, NoopListener).setBulkActions(100).build()
     
     prices.map { pp =>
       val src = PricePaidToJson(pp)

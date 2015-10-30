@@ -1,7 +1,19 @@
 {
-  "_source":["id","address.townCity", "address.postcode"],
-  "size": 5,
+  "size": 20,
   "query": {
-    "match" : { "address.postcode": "M21 0YB" }
+    "filtered" : {
+      "query" : {
+        "match_all" : {}
+      },
+      "filter" : {
+        "geo_distance" : {
+          "distance" : "1km",
+          "address.location" : {
+            "lat" : 53.4389862838117,
+            "lon" : -2.26168179339287
+          }
+        }
+      }
+    }
   }
 }

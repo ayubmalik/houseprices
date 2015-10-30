@@ -7,6 +7,7 @@ class CreateIndex(val client: Client, val indexName: String, val typeName: Strin
   private val admin = client.admin()
 
   def recreate = {
+    println("Deleting index " + indexName)
     admin.indices.prepareDelete(indexName).execute.actionGet
     createIndex
   }
@@ -14,12 +15,12 @@ class CreateIndex(val client: Client, val indexName: String, val typeName: Strin
   def createIfNotExists = {
     val response = admin.indices.prepareExists(indexName).execute.actionGet
     if (!response.isExists) {
-      println(indexName + " does not exist")
       createIndex
     }
   }
 
   private def createIndex = {
+    println("Creating index " + indexName)
     admin.indices.prepareCreate(indexName).execute.actionGet
     mappingJsonSource.map { json =>
       val mappingRequest = new PutMappingRequest(indexName).`type`(typeName).source(json)

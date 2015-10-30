@@ -1,0 +1,7 @@
+{
+  "_source":["id","address.townCity", "address.postcode"],
+  "size": 5,
+  "query": {
+    "match" : { "address.postcode": "M21 0YB" }
+  }
+}

@@ -1,13 +1,10 @@
 package houseprices
 
 import scala.io.Source
-import org.elasticsearch.action.bulk.BulkProcessor
-import org.elasticsearch.action.index.IndexRequest
-import org.parboiled2.ParserInput.apply
-import houseprices.elasticsearch.CreateIndex
-import houseprices.elasticsearch.NoopListener
-import houseprices.elasticsearch.config.EsClientBuilder
+
 import houseprices.elasticsearch.BulkAddPricePaid
+import houseprices.elasticsearch.CreateIndex
+import houseprices.elasticsearch.config.EsClientBuilder
 
 object PricePaidIndexApp {
 

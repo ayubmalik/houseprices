@@ -1,16 +1,13 @@
 package houseprices.elasticsearch
 
 import java.util.concurrent.TimeUnit
+
 import org.elasticsearch.action.bulk.BulkProcessor
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.Client
-import org.elasticsearch.client.Requests
-import org.parboiled2.ParserInput.apply
-import houseprices.PricePaidCsv
+
 import houseprices.PricePaidToJson
-import houseprices.postcodes.ClasspathSource
-import org.elasticsearch.common.unit.TimeValue
-import houseprices.PricePaidCsvProcessor
+import houseprices.csv.PricePaidCsvProcessor
 
 class BulkAddPricePaid(val client: Client, val csvFile: String) {
 

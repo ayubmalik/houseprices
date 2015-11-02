@@ -1,11 +1,10 @@
-package houseprices
+package houseprices.csv
 
-import org.parboiled2._
-import houseprices.csv.CSVParboiledParser
-import houseprices.csv.CSVParserIETFAction
+import houseprices.postcodes.ClasspathSource
 import houseprices.postcodes.Postcode
 import houseprices.postcodes.PostcodeRepo
-import houseprices.postcodes.ClasspathSource
+import houseprices.PricePaid
+import houseprices.Address
 
 class PricePaidCsvProcessor(val csvInputFile: String) {
   lazy val repo = PostcodeRepo

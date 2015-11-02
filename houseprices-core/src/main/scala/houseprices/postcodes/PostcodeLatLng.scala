@@ -15,7 +15,7 @@ trait PostcodeToLatLon {
 object PostcodeRepo extends PostcodeToLatLon {
 
   private val Zero = LatLon(0.0, 0.0)
-  lazy private val rows = new PostcodesCsv(ClasspathSource("ukpostcodes.cleaned.csv").mkString).parse()
+  lazy private val rows = new PostcodesCsv("ukpostcodes.cleaned.csv").parse()
   lazy private val data = (rows.map(p => p.postcode -> p.latLon)).toMap
 
   def latLon(postcode: Postcode): LatLon = {

@@ -14,7 +14,7 @@ class BulkAddPricePaid(val client: Client, val csvFile: String) {
   def run() = {
 
     println("Creating es bulk processor")
-    val bulk = BulkProcessor.builder(client, PrintListener).setBulkActions(1000).build()
+    val bulk = BulkProcessor.builder(client, NoopListener).setBulkActions(1000).build()
 
     println("Creating csv processor for file: " + csvFile)
     val csv = new PricePaidCsvProcessor(csvFile)

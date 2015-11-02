@@ -10,23 +10,24 @@ import houseprices.PricePaidCsv
 import houseprices.PricePaidToJson
 import houseprices.postcodes.ClasspathSource
 import org.elasticsearch.common.unit.TimeValue
+import houseprices.PricePaidCsvProcessor
 
 class BulkAddPricePaid(val client: Client, val csvFile: String) {
 
   def run() = {
-    println("Parsing CSV file: " + csvFile)
-    val rows = new PricePaidCsv(ClasspathSource(csvFile).mkString).parse
 
-    println("Starting bulk add")
-    val bulk = BulkProcessor
-      .builder(client, PrintListener).setBulkActions(1000).build()
+    println("Creating es bulk processor")
+    val bulk = BulkProcessor.builder(client, PrintListener).setBulkActions(1000).build()
 
-    rows.foreach { pp =>
+    println("Creating csv processor for file: " + csvFile)
+    val csv = new PricePaidCsvProcessor(csvFile)
+    csv.foreach { pp =>
       val json = PricePaidToJson(pp)
       bulk.add(new IndexRequest("pricepaid", "uk", pp.id).source(json))
     }
+
     val status = bulk.awaitClose(3000, TimeUnit.MILLISECONDS)
-    println("\nFlush status: " + status)
+    println("\nClosed bulk processor. Success status: " + status)
   }
 }
 

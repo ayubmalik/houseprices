@@ -1,0 +1,24 @@
+{
+  "size": 100,
+  "query": {
+    "filtered" : {
+      "query" : {
+        "match_all" : {}
+      },
+      "filter" : {
+        "geo_distance" : {
+          "distance" : "2km",
+          "address.location" : {
+            "lat" : 53.4389862838117,
+            "lon" : -2.26168179339287
+          }
+        }
+      }
+    }
+  },
+  "aggregations": {
+    "avg_price" : {
+     "avg" : { "field" : "price" }
+    }
+  }
+}

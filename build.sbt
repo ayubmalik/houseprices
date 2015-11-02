@@ -12,7 +12,11 @@ val commonSettings = Seq(
 lazy val core = project.in(file("houseprices-core"))
   .settings(commonSettings:_*)
 
+lazy val rest = project.in(file("houseprices-rest-api"))
+  .settings(commonSettings:_*)
+
 lazy val main = project.in(file("."))
   .aggregate(core)
+  .aggregate(rest)
   .settings(commonSettings:_*)
 

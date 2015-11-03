@@ -16,22 +16,23 @@ import akka.http.scaladsl.client.RequestBuilding
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.model.StatusCodes
 import scala.concurrent.ExecutionContext.Implicits.global
+import akka.http.scaladsl.marshalling.ToResponseMarshallable
 
 object HousePricesRestApi extends App {
 
   implicit val system = ActorSystem("houseprices-system")
   implicit val materializer = ActorMaterializer()
 
-  lazy val housePriceFlow: Flow[HttpRequest, HttpResponse, Any] = Http().outgoingConnection("localhost", 8080)
+  lazy val elasticSearchFlow: Flow[HttpRequest, HttpResponse, Any] = Http().outgoingConnection("localhost", 9200)
 
-  def housePriceSearch(request: HttpRequest): Future[HttpResponse] =
-    Source.single(request).via(housePriceFlow).runWith(Sink.head)
+  def esHousePriceSearch(request: HttpRequest): Future[HttpResponse] =
+    Source.single(request).via(elasticSearchFlow).runWith(Sink.head)
 
   def searchByPostcode(postcode: String): Future[String] = {
-    housePriceSearch(RequestBuilding.Get(s"/pricepaid/uk/_search?q=$postcode")).flatMap { response =>
+    esHousePriceSearch(RequestBuilding.Get(s"/pricepaid/uk/_search?q=$postcode")).flatMap { response =>
       response.status match {
         case OK => Unmarshal(response.entity).to[String]
-        case BadRequest => Future.successful("woops")
+        case BadRequest => Future.successful("whoops bad request")
         case _ => Unmarshal(response.entity).to[String].flatMap { entity =>
           val error = s"FAIL - ${response.status}"
           Future.failed(new IOException(error))
@@ -47,7 +48,7 @@ object HousePricesRestApi extends App {
       path("houseprices" / ".*".r) { postcode =>
         get {
           complete {
-            s"Searching for postcode ${postcode.toUpperCase} "
+            searchByPostcode("Chorlton").map[ToResponseMarshallable](r => r)
           }
         }
       }

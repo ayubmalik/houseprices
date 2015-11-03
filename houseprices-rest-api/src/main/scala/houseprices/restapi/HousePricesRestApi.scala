@@ -46,6 +46,7 @@ object HousePricesRestApi extends App {
 
   def searchByPostcode(postcode: String): Future[String] = {
     esHousePriceSearch(RequestBuilding.Get(s"/pricepaid/uk/_search?q=$postcode")).flatMap { response =>
+      println(s"searching for $postcode")
       response.status match {
         case OK => Unmarshal(response.entity).to[String]
         case BadRequest => Future.successful("whoops bad request")
@@ -59,11 +60,11 @@ object HousePricesRestApi extends App {
 
   val route =
     path("") {
-      redirect("/houseprices/wa3%206xf", StatusCodes.Found)
+      redirect("/houseprices/wa3+6xf", StatusCodes.Found)
     } ~
       path("houseprices" / ".*".r) { postcode =>
         get {
-          complete(searchByPostcode("Chorlton").map[HttpResponse](body => HttpResponse(entity = HttpEntity(ContentType(MediaTypes.`application/json`), body))))
+            complete(searchByPostcode(postcode).map[HttpResponse](body => HttpResponse(entity = HttpEntity(ContentType(MediaTypes.`application/json`), body))))
         }
       }
 

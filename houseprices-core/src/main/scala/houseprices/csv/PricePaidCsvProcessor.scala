@@ -5,10 +5,11 @@ import houseprices.postcodes.Postcode
 import houseprices.postcodes.PostcodeRepo
 import houseprices.PricePaid
 import houseprices.Address
+import houseprices.postcodes.FileSource
 
 class PricePaidCsvProcessor(val csvInputFile: String) {
   lazy val repo = PostcodeRepo
-  lazy val csv = ClasspathSource(csvInputFile).getLines()
+  lazy val csv = FileSource(csvInputFile).getLines()
 
   def foreach(rowProcessor: PricePaid => Unit): Unit = {
     for (row <- csv)

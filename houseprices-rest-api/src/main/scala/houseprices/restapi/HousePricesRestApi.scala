@@ -36,7 +36,7 @@ import akka.stream.scaladsl.Source
 
 object HousePricesRestApi extends App {
 
-  implicit val system = ActorSystem("houseprices-system")
+  implicit val system = ActorSystem("houseprices-restapi-system")
   implicit val materializer = ActorMaterializer()
 
   lazy val elasticSearchFlow: Flow[HttpRequest, HttpResponse, Any] = Http().outgoingConnection("localhost", 9200)
@@ -44,9 +44,8 @@ object HousePricesRestApi extends App {
   def esHousePriceSearch(request: HttpRequest): Future[HttpResponse] =
     Source.single(request).via(elasticSearchFlow).runWith(Sink.head)
 
-  def searchByPostcode(postcode: String): Future[String] = {
+  def housePriceSearch(postcode: String): Future[String] = {
     esHousePriceSearch(RequestBuilding.Get(s"/pricepaid/uk/_search?q=$postcode")).flatMap { response =>
-      println(s"searching for $postcode")
       response.status match {
         case OK => Unmarshal(response.entity).to[String]
         case BadRequest => Future.successful("whoops bad request")
@@ -64,7 +63,7 @@ object HousePricesRestApi extends App {
     } ~
       path("houseprices" / ".*".r) { postcode =>
         get {
-            complete(searchByPostcode(postcode).map[HttpResponse](body => HttpResponse(entity = HttpEntity(ContentType(MediaTypes.`application/json`), body))))
+          complete(housePriceSearch(postcode).map[HttpResponse](body => HttpResponse(entity = HttpEntity(ContentType(MediaTypes.`application/json`), body))))
         }
       }
 

@@ -11,7 +11,7 @@ import akka.stream.scaladsl.RunnableGraph
 import akka.stream.scaladsl.Sink
 import akka.stream.scaladsl.Source
 
-object FlowExample extends App {
+object FlowExample {
   implicit val sys = ActorSystem()
   implicit val materializer = ActorMaterializer()
 

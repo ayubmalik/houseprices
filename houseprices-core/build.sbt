@@ -6,9 +6,10 @@ libraryDependencies ++= {
   val scalaTestVersion     = "2.2.4"
 
   Seq(
-    "org.elasticsearch" %  "elasticsearch" % elasticSearchVersion,
-    "org.json4s"        %% "json4s-native" % json4sVersion,
-    "org.scalatest"     %% "scalatest"     % scalaTestVersion % "test"
+    "org.apache.httpcomponents" %  "httpclient"    % "4.5.1",
+    "org.elasticsearch"         %  "elasticsearch" % elasticSearchVersion,
+    "org.json4s"                %% "json4s-native" % json4sVersion,
+    "org.scalatest"             %% "scalatest"     % scalaTestVersion % "test"
   )
 }
 

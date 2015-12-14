@@ -19,8 +19,8 @@ object CreatePricePaidIndexApp {
 
     val csvFile = if (args.length > 0) args(0) else "tools/1000-sample-houseprices.csv"
     BulkAddPricePaid(client, csvFile).run
-    
-    println("Node up: http://localhost:9200/pricepaid/uk/_count")
+
+    println("ES up: http://localhost:9200/pricepaid/uk/_count")
   }
 
 }

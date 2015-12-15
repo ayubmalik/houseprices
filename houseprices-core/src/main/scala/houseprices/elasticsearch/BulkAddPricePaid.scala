@@ -22,7 +22,7 @@ class BulkAddPricePaid(val client: Client, val csvFile: String) {
       val json = PricePaidToJson(pp)
       bulk.add(new IndexRequest("pricepaid", "uk", pp.id).source(json))
     }
-
+    bulk.flush
     val status = bulk.awaitClose(3000, TimeUnit.MILLISECONDS)
     println("\nClosed bulk processor. Success status: " + status)
   }

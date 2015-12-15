@@ -11,7 +11,7 @@ object CreatePricePaidIndexApp {
   def main(args: Array[String]): Unit = {
 
     println("Creating ES client")
-    val client = EsClientBuilder.build()
+    val client = EsClientBuilder.buildClient()
 
     println("Creating ES index with type uk")
     val mappingJsonSource = ClasspathSource("pricepaid-uk-es-mapping.json").getLines.mkString

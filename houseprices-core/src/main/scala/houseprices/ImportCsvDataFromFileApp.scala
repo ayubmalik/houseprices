@@ -1,10 +1,7 @@
 package houseprices
 
-import scala.io.Source
 import houseprices.elasticsearch.BulkAddPricePaid
-import houseprices.elasticsearch.CreateIndex
 import houseprices.elasticsearch.config.EsClientBuilder
-import houseprices.postcodes.ClasspathSource
 
 object ImportCsvDataFromFileApp {
 
@@ -12,9 +9,11 @@ object ImportCsvDataFromFileApp {
     checkUsage(args)
     val csvFile = args(0)
     println(s"Import data from $csvFile into ES")
-    BulkAddPricePaid(EsClientBuilder.build(), csvFile).run
+    val client = EsClientBuilder.transportClient
+    BulkAddPricePaid(client, csvFile).run
 
-    println("ES up: http://localhost:9200/pricepaid/uk/_count")
+    println("Finished import.")
+    client.close()
   }
 
   def checkUsage(args: Array[String]) = {

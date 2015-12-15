@@ -6,13 +6,13 @@ import org.scalatest.FlatSpec
 class EsClientBuilderSpec extends FlatSpec with Matchers {
 
   "EsClientBuilder" should "build for dev by default" in {
-    val client = EsClientBuilder.build()
+    val client = EsClientBuilder.buildClient()
     client.settings().get("cluster.name") should be("dev.pricepaid")
     client.close()
   }
-  
+
   "EsClientBuilder" should "build for qa by when specified" in {
-    val client = EsClientBuilder.build("qa")
+    val client = EsClientBuilder.buildClient("qa")
     client.settings().get("cluster.name") should be("qa.pricepaid")
     client.close()
   }

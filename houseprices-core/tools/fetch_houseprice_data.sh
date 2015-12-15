@@ -1,10 +1,15 @@
 #!/bin/bash
-csv_file=http://publicdata.landregistry.gov.uk/market-trend-data/price-paid-data/b/pp-complete.csv
-tmp_file=/tmp/pp-complete.csv
 
-printf "Deleting temp file: %s\n" "${tmp_file}"
+csv_url=$1
+dest_file=$2
 
-printf "\nFetching file: %s\nIt's over 3.5GB in size! It may take a while...\n\n" "${csv_file}"
+if [[ "$csv_url" == "" || "$dest_file" == "" ]]; then
+  echo "usage: $0 <csv_url> <dest_file>"
+  exit 1
+fi
 
-curl -o ${tmp_file} ${csv_file_}
+printf "\nWriting file %s to %s\n" "${csv_url}" "${dest_file}"
+
+curl -o ${dest_file} ${full_url}
+
 

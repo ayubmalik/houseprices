@@ -10,10 +10,10 @@ object CreatePricePaidIndexApp {
 
   def main(args: Array[String]): Unit = {
 
-    println("Creating client")
+    println("Creating ES client")
     val client = EsClientBuilder.build()
 
-    println("Creating index with type uk")
+    println("Creating ES index with type uk")
     val mappingJsonSource = ClasspathSource("pricepaid-uk-es-mapping.json").getLines.mkString
     new CreateIndex(client, "pricepaid", "uk", Some(mappingJsonSource)).recreate
 

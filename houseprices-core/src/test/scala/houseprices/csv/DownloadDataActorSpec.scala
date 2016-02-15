@@ -8,7 +8,7 @@ import akka.actor.actorRef2Scala
 import akka.testkit.ImplicitSender
 import akka.testkit.TestKit
 import akka.actor.Props
-
+import scala.concurrent.duration.DurationInt
 class DownloadDataActorSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
 
   import DownloadDataActor._
@@ -27,7 +27,7 @@ class DownloadDataActorSpec(_system: ActorSystem) extends TestKit(_system) with 
 
         val downloadActor = system.actorOf(Props[DownloadDataActor]);
         downloadActor ! Download("http://textfiles.com/computers/secret.txt");
-        expectMsg(DownloadResult("http://textfiles.com/computers/secret.txt", "somepath"));
+        expectMsg(3.seconds, DownloadResult("http://textfiles.com/computers/secret.txt", "/tmp/secret.txt"));
       }
     }
   }

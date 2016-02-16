@@ -23,6 +23,7 @@ class DownloadWorker(saveToFolder: String) extends Actor with ImplicitMaterializ
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
   import Messages._
 
+  val oneGigabyte = 1073741824
   val http = Http(context.system)
 
   createFolder(saveToFolder)
@@ -36,7 +37,7 @@ class DownloadWorker(saveToFolder: String) extends Actor with ImplicitMaterializ
   def downloading(originalSender: ActorRef, url: String, fileName: String): Receive = {
     case HttpResponse(StatusCodes.OK, headers, entity, _) =>
       log.info("Got response")
-      saveEntityToFile(entity, makeFilePath(saveToFolder, fileName))
+      saveEntityToFile(entity.withSizeLimit(oneGigabyte), makeFilePath(saveToFolder, fileName))
       originalSender ! DownloadResult(url, makeFilePath(saveToFolder, fileName))
     case HttpResponse(code, _, _, _) =>
       log.info("Request failed, response code: " + code)

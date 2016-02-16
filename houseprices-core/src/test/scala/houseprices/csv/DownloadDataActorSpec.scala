@@ -1,14 +1,18 @@
 package houseprices.csv
 
+import scala.concurrent.duration.DurationInt
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.Matchers
 import org.scalatest.WordSpecLike
 import akka.actor.ActorSystem
+import akka.actor.Props
 import akka.actor.actorRef2Scala
 import akka.testkit.ImplicitSender
 import akka.testkit.TestKit
-import akka.actor.Props
-import scala.concurrent.duration.DurationInt
+import scala.util.Random
+import java.nio.file.Paths
+import java.nio.file.Files
+import akka.actor.PoisonPill
 class DownloadDataActorSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
 
   import DownloadDataActor._
@@ -16,18 +20,32 @@ class DownloadDataActorSpec(_system: ActorSystem) extends TestKit(_system) with 
   def this() = this(ActorSystem("TestSystem"))
 
   override def afterAll {
-    TestKit.shutdownActorSystem(system)
+    TestKit.shutdownActorSystem(system, 1.seconds, true)
   }
 
   "DownloadDataActor" when {
 
     "downloading data" should {
 
-      "make HTTP request" in {
+      "save file" in {
+        val downloadActor = system.actorOf(Props(classOf[DownloadDataActor], "/tmp/downloads"))
+        downloadActor ! Download("http://textfiles.com/computers/secret.txt", "secret.txt")
+        expectMsg(3.seconds, DownloadResult("http://textfiles.com/computers/secret.txt", "/tmp/downloads/secret.txt"))
+      }
+    }
 
-        val downloadActor = system.actorOf(Props[DownloadDataActor]);
-        downloadActor ! Download("http://textfiles.com/computers/secret.txt");
-        expectMsg(3.seconds, DownloadResult("http://textfiles.com/computers/secret.txt", "/tmp/secret.txt"));
+    "starting" should {
+
+      "create output folder" in {
+        val saveToFolder = "/tmp/tst_" + Random.alphanumeric.take(5).mkString
+        Files.isDirectory(Paths.get(saveToFolder)) should be(false)
+
+        val downloadActor = system.actorOf(Props(classOf[DownloadDataActor], saveToFolder))
+        within(500.millis) {
+          Files.isDirectory(Paths.get(saveToFolder)) should be(true)
+          Files.deleteIfExists(Paths.get(saveToFolder))
+          downloadActor ! PoisonPill
+        }
       }
     }
   }

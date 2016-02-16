@@ -3,8 +3,6 @@ package houseprices.csv
 import java.io.File
 import java.util.concurrent.Executor
 import scala.concurrent.ExecutionContext
-import DownloadDataActor.DownloadResult
-import DownloadDataActor.Failure
 import akka.actor.Actor
 import akka.actor.ActorLogging
 import akka.actor.ActorRef
@@ -21,15 +19,10 @@ import akka.stream.scaladsl.ImplicitMaterializer
 import java.nio.file.Files
 import java.nio.file.Paths
 
-object DownloadDataActor {
-  case class Download(url: String, fileName: String)
-  case class DownloadResult(url: String, filePath: String)
-  case class Failure(msg: String)
-}
-
-class DownloadDataActor(saveToFolder: String) extends Actor with ImplicitMaterializer with ActorLogging {
+class DownloadWorker(saveToFolder: String) extends Actor with ImplicitMaterializer with ActorLogging {
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
-  import DownloadDataActor._
+  import Messages._
+
   val http = Http(context.system)
 
   createFolder(saveToFolder)

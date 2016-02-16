@@ -13,9 +13,10 @@ import scala.util.Random
 import java.nio.file.Paths
 import java.nio.file.Files
 import akka.actor.PoisonPill
-class DownloadDataActorSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
 
-  import DownloadDataActor._
+class DownloadWorkerSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
+
+  import Messages._
 
   def this() = this(ActorSystem("TestSystem"))
 
@@ -23,13 +24,13 @@ class DownloadDataActorSpec(_system: ActorSystem) extends TestKit(_system) with 
     TestKit.shutdownActorSystem(system, 1.seconds, true)
   }
 
-  "DownloadDataActor" when {
+  "DownloadWorker" when {
 
     "downloading data" should {
 
       "save file" in {
-        val downloadActor = system.actorOf(Props(classOf[DownloadDataActor], "/tmp/downloads"))
-        downloadActor ! Download("http://textfiles.com/computers/secret.txt", "secret.txt")
+        val worker = system.actorOf(Props(classOf[DownloadWorker], "/tmp/downloads"))
+        worker ! Download("http://textfiles.com/computers/secret.txt", "secret.txt")
         expectMsg(3.seconds, DownloadResult("http://textfiles.com/computers/secret.txt", "/tmp/downloads/secret.txt"))
       }
     }
@@ -40,11 +41,10 @@ class DownloadDataActorSpec(_system: ActorSystem) extends TestKit(_system) with 
         val saveToFolder = "/tmp/tst_" + Random.alphanumeric.take(5).mkString
         Files.isDirectory(Paths.get(saveToFolder)) should be(false)
 
-        val downloadActor = system.actorOf(Props(classOf[DownloadDataActor], saveToFolder))
+        system.actorOf(Props(classOf[DownloadWorker], saveToFolder))
         within(500.millis) {
           Files.isDirectory(Paths.get(saveToFolder)) should be(true)
           Files.deleteIfExists(Paths.get(saveToFolder))
-          downloadActor ! PoisonPill
         }
       }
     }

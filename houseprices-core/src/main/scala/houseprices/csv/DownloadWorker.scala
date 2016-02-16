@@ -34,13 +34,13 @@ class DownloadWorker(saveToFolder: String) extends Actor with ImplicitMaterializ
   }
 
   def downloading(originalSender: ActorRef, url: String, fileName: String): Receive = {
-    case _: Download => sender ! Failure("sorry can only download one file at a time")
     case HttpResponse(StatusCodes.OK, headers, entity, _) =>
       log.info("Got response")
       saveEntityToFile(entity, makeFilePath(saveToFolder, fileName))
       originalSender ! DownloadResult(url, makeFilePath(saveToFolder, fileName))
     case HttpResponse(code, _, _, _) =>
       log.info("Request failed, response code: " + code)
+    case _: Download => sender ! Failure("Sorry already downloading")
   }
 
   def downloadFileFrom(url: String): Unit = {

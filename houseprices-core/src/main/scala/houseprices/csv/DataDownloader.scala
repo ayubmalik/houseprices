@@ -22,6 +22,7 @@ import akka.actor.Props
 import akka.routing.ActorRefRoutee
 import akka.routing.Router
 import akka.routing.RoundRobinRoutingLogic
+import akka.actor.Terminated
 
 class DataDownloader extends Actor with ImplicitMaterializer with ActorLogging {
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
@@ -36,7 +37,14 @@ class DataDownloader extends Actor with ImplicitMaterializer with ActorLogging {
   }
 
   def receive = {
-    case _ => // do nowt
+    case d: Messages.Download =>
+      router.route(d, sender())
+    case Terminated(a) =>
+      log.info("{} is terminated", a)
+      router = router.removeRoutee(a)
+      val r = context.actorOf(Props[DownloadWorker])
+      context watch r
+      router = router.addRoutee(r)
   }
 
 }

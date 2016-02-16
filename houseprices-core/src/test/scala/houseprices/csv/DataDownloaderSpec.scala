@@ -8,6 +8,9 @@ import org.scalatest.Matchers
 import org.scalatest.WordSpecLike
 import akka.actor.Props
 import akka.testkit.TestActorRef
+import akka.actor.PoisonPill
+import akka.testkit.TestProbe
+import scala.actors.remote.Terminate
 
 class DataDownloaderSpec extends TestKit(ActorSystem("test"))
     with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
@@ -15,10 +18,19 @@ class DataDownloaderSpec extends TestKit(ActorSystem("test"))
   "DataDownloader" when {
 
     "starting" should {
-
       "create 2 workers" in {
         val actorRef = TestActorRef[DataDownloader]
         actorRef.underlyingActor.router.routees.size should be(2)
+      }
+    }
+
+    "running" should {
+      "should allow max downloads" in {
+        val downloader = system.actorOf(Props[DataDownloader])
+        downloader ! Messages.Download("http://made.up.url/path", "file1")
+        downloader ! Messages.Download("http://made.up.url/path", "file2")
+        downloader ! Messages.Download("http://made.up.url/path", "file3")
+        expectMsg(Messages.Failure("Sorry already downloading"))
       }
     }
   }

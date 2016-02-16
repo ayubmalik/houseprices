@@ -24,12 +24,12 @@ import akka.routing.Router
 import akka.routing.RoundRobinRoutingLogic
 import akka.actor.Terminated
 
-class DataDownloader extends Actor with ImplicitMaterializer with ActorLogging {
+class DataDownloader(saveToFolder: String) extends Actor with ImplicitMaterializer with ActorLogging {
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
 
   var router = {
     val routees = Vector.fill(2) {
-      val r = context.actorOf(Props(classOf[DownloadWorker], "/tmp/downloads"))
+      val r = context.actorOf(Props(classOf[DownloadWorker], saveToFolder))
       context watch r
       ActorRefRoutee(r)
     }

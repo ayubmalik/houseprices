@@ -18,14 +18,14 @@ class DataDownloaderSpec extends TestKit(ActorSystem("test"))
   "DataDownloader" when {
 
     "starting" should {
-      "create 2 workers" in {
+      "create workers" in {
         val actorRef = TestActorRef[DataDownloader]
         actorRef.underlyingActor.router.routees.size should be(2)
       }
     }
 
     "running" should {
-      "should allow max downloads" in {
+      "should limit downloads" in {
         val downloader = system.actorOf(Props[DataDownloader])
         downloader ! Messages.Download("http://made.up.url/path", "file1")
         downloader ! Messages.Download("http://made.up.url/path", "file2")

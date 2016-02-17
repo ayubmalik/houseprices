@@ -29,8 +29,8 @@ trait EsClientBuilder {
 object EsClientBuilder {
   def buildClient(env: String = "dev"): Client = {
     env match {
-      case "qa" => new EsClientBuilder with QaConfig build
-      case _ => new EsClientBuilder with DevConfig build
+      case "qa" => (new EsClientBuilder with QaConfig) build
+      case _ => (new EsClientBuilder with DevConfig) build
     }
   }
 

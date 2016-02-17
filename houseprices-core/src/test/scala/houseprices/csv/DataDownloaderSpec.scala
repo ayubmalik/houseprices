@@ -30,7 +30,7 @@ class DataDownloaderSpec extends TestKit(ActorSystem("test"))
         downloader ! Messages.Download("http://made.up.url/path", "file1")
         downloader ! Messages.Download("http://made.up.url/path", "file2")
         downloader ! Messages.Download("http://made.up.url/path", "file3")
-        expectMsg(Messages.Failure("Sorry already downloading"))
+        expectMsg(Messages.DownloadFailure("Sorry already downloading"))
       }
     }
   }

@@ -1,8 +1,15 @@
 package houseprices.csv
 
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.concurrent.Executor
+import scala.annotation.implicitNotFound
 import scala.concurrent.ExecutionContext
+import scala.util.Failure
+import scala.util.Success
+import Messages.DownloadFailure
+import Messages.DownloadResult
 import akka.actor.Actor
 import akka.actor.ActorLogging
 import akka.actor.ActorRef
@@ -15,16 +22,15 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.Uri.apply
 import akka.pattern.pipe
 import akka.stream.scaladsl.FileIO
-import akka.stream.scaladsl.ImplicitMaterializer
-import java.nio.file.Files
-import java.nio.file.Paths
+import akka.stream.ActorMaterializer
 
-class DownloadWorker(saveToFolder: String) extends Actor with ImplicitMaterializer with ActorLogging {
+class DownloadWorker(saveToFolder: String) extends Actor  with ActorLogging {
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
   import Messages._
 
   val oneGigabyte = 1073741824
   val http = Http(context.system)
+  implicit val materializer = ActorMaterializer()
 
   createFolder(saveToFolder)
 
@@ -36,12 +42,11 @@ class DownloadWorker(saveToFolder: String) extends Actor with ImplicitMaterializ
 
   def downloading(originalSender: ActorRef, url: String, fileName: String): Receive = {
     case HttpResponse(StatusCodes.OK, headers, entity, _) =>
-      log.info("Got response")
-      saveEntityToFile(entity.withSizeLimit(oneGigabyte), makeFilePath(saveToFolder, fileName))
-      originalSender ! DownloadResult(url, makeFilePath(saveToFolder, fileName))
+      log.info("got response")
+      saveEntityToFile(entity.withSizeLimit(oneGigabyte), originalSender, url, makeFilePath(saveToFolder, fileName))
     case HttpResponse(code, _, _, _) =>
-      log.info("Request failed, response code: " + code)
-    case _: Download => sender ! Failure("Sorry already downloading")
+      log.info("request failed, response code: " + code)
+    case _: Download => sender ! DownloadFailure("Sorry already downloading")
   }
 
   def downloadFileFrom(url: String): Unit = {
@@ -49,8 +54,16 @@ class DownloadWorker(saveToFolder: String) extends Actor with ImplicitMaterializ
     http.singleRequest(HttpRequest(uri = url)) pipeTo self
   }
 
-  def saveEntityToFile(entity: ResponseEntity, filePath: String) = {
-    entity.dataBytes.runWith(fileWriter(filePath))
+  def saveEntityToFile(entity: ResponseEntity, sender: ActorRef, url: String, filePath: String) = {
+    entity.dataBytes.runWith(fileWriter(filePath)) onComplete { t =>
+      t match {
+        case Success(size) =>
+          log.info("completed file, size {}", size)
+          sender ! DownloadResult(url, filePath)
+        case Failure(f) => println(f)
+      }
+      context.become(receive)
+    }
   }
 
   def fileWriter(fileName: String) = {
@@ -63,6 +76,11 @@ class DownloadWorker(saveToFolder: String) extends Actor with ImplicitMaterializ
 
   def createFolder(folder: String) {
     Files.createDirectories(Paths.get(folder))
+  }
+
+  override def postStop() = {
+    http.shutdownAllConnectionPools()
+    log.info("shutdown http conn pools")
   }
 
 }

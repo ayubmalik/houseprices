@@ -1,23 +1,36 @@
 package houseprices.admin.api
 
-import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
-import akka.http.scaladsl.Http
+
+import akka.actor.ActorSystem
 import akka.event.Logging
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.marshallers.xml.ScalaXmlSupport._
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import akka.http.scaladsl.marshalling.ToResponseMarshallable.apply
+import akka.http.scaladsl.server.Directive.addByNameNullaryApply
+import akka.http.scaladsl.server.Directives.complete
+import akka.http.scaladsl.server.Directives.get
+import akka.http.scaladsl.server.Directives.path
+import akka.http.scaladsl.server.Directives.pathPrefix
+import akka.http.scaladsl.server.Directives.segmentStringToPathMatcher
+import akka.http.scaladsl.server.RouteResult.route2HandlerFlow
 import akka.stream.ActorMaterializer
+import spray.json.DefaultJsonProtocol
 
 case class ActiveDownloads(count: Int)
 
-trait AdminService {
+trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
+  implicit val activeFormat = jsonFormat1(ActiveDownloads)
+}
+
+trait AdminService extends AdminJsonProtocols {
 
   val routes =
     pathPrefix("admin") {
       path("datadownloads") {
         get {
           complete {
-            <h1>Admin placeholder</h1>
+            ActiveDownloads(1)
           }
         }
       }

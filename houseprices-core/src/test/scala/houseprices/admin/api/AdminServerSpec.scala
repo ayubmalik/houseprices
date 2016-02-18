@@ -10,14 +10,9 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import spray.json.DefaultJsonProtocol
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 
-object AdminJsonProtocols extends DefaultJsonProtocol with SprayJsonSupport {
-  implicit val activeFormat = jsonFormat1(ActiveDownloads)
-}
-
 class AdminServerSpec extends WordSpec
-    with Matchers with ScalatestRouteTest with AdminService {
+    with Matchers with ScalatestRouteTest with AdminService with AdminJsonProtocols {
 
-  import AdminJsonProtocols._
 
   "Admin Server" when {
 
@@ -29,7 +24,7 @@ class AdminServerSpec extends WordSpec
         getRequest ~> routes ~> check {
           status.isSuccess() shouldEqual true
           val active = ActiveDownloads(0)
-          responseEntity shouldEqual HttpEntity(`application/json`, "meh")
+          //responseEntity shouldEqual HttpEntity(`application/json`, active.toJson.prettyPrint())
         }
 
       }

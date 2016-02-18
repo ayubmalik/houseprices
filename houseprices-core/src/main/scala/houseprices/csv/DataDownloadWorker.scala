@@ -24,7 +24,7 @@ import akka.pattern.pipe
 import akka.stream.scaladsl.FileIO
 import akka.stream.ActorMaterializer
 
-class DownloadWorker(saveToFolder: String) extends Actor  with ActorLogging {
+class DataDownloadWorker(saveToFolder: String) extends Actor with ActorLogging {
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
   import Messages._
 

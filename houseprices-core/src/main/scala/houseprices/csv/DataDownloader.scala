@@ -18,7 +18,7 @@ class DataDownloader(saveToFolder: String) extends Actor  with ActorLogging {
 
   var router = {
     val routees = Vector.fill(2) {
-      val r = context.actorOf(Props(classOf[DownloadWorker], saveToFolder))
+      val r = context.actorOf(Props(classOf[DataDownloadWorker], saveToFolder))
       context watch r
       ActorRefRoutee(r)
     }
@@ -31,7 +31,7 @@ class DataDownloader(saveToFolder: String) extends Actor  with ActorLogging {
     case Terminated(a) =>
       log.warning("{} is terminated", a)
       router = router.removeRoutee(a)
-      val r = context.actorOf(Props[DownloadWorker])
+      val r = context.actorOf(Props[DataDownloadWorker])
       context watch r
       router = router.addRoutee(r)
   }

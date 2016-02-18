@@ -29,7 +29,7 @@ class DownloadWorkerSpec(_system: ActorSystem) extends TestKit(_system) with Imp
     "downloading data" should {
 
       "save file" in {
-        val worker = system.actorOf(Props(classOf[DownloadWorker], "/tmp/downloads"))
+        val worker = system.actorOf(Props(classOf[DataDownloadWorker], "/tmp/downloads"))
         worker ! Download("http://textfiles.com/computers/secret.txt", "secret.txt")
         expectMsg(3.seconds, DownloadResult("http://textfiles.com/computers/secret.txt", "/tmp/downloads/secret.txt"))
       }
@@ -41,7 +41,7 @@ class DownloadWorkerSpec(_system: ActorSystem) extends TestKit(_system) with Imp
         val saveToFolder = "/tmp/tst_" + Random.alphanumeric.take(5).mkString
         Files.isDirectory(Paths.get(saveToFolder)) should be(false)
 
-        system.actorOf(Props(classOf[DownloadWorker], saveToFolder))
+        system.actorOf(Props(classOf[DataDownloadWorker], saveToFolder))
         within(500.millis) {
           Files.isDirectory(Paths.get(saveToFolder)) should be(true)
           Files.deleteIfExists(Paths.get(saveToFolder))

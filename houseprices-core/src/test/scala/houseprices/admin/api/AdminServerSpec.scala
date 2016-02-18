@@ -4,9 +4,9 @@ import org.scalatest.Matchers
 import org.scalatest.WordSpec
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 
-class AdminApiSpec extends WordSpec with Matchers with ScalatestRouteTest {
+class AdminServerSpec extends WordSpec with Matchers with ScalatestRouteTest {
 
-  "Admin Api" when {
+  "Admin Server" when {
 
     "url is /admin/datadownloads" should {
 

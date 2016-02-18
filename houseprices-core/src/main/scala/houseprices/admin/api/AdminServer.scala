@@ -22,6 +22,14 @@ trait AdminService {
     }
 }
 
+class AdminServer(implicit val system: ActorSystem, implicit val materializer: ActorMaterializer) extends AdminService {
+
+  def startServer(interface: String, port: Int) = {
+    Http().bindAndHandle(routes, interface, port)
+    this
+  }
+}
+
 object AdminServer extends App with AdminService {
   implicit val system = ActorSystem("housepricesAdminSystem")
   implicit val materializer = ActorMaterializer()
@@ -29,6 +37,6 @@ object AdminServer extends App with AdminService {
   val logger = Logging(system, getClass)
 
   val (interface, port) = (config.getString("akka.http.interface"), config.getInt("akka.http.port"))
-  Http().bindAndHandle(routes, interface, port)
+  val server = new AdminServer().startServer(interface, port)
   logger.info(s"Server ready at {}:{}", interface, port)
 }

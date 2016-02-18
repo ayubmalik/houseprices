@@ -10,12 +10,15 @@ libraryDependencies ++= {
   val akkaHttpVersion      = "2.4.2"
 
   Seq(
-    "org.apache.httpcomponents" %  "httpclient"    % "4.5.1",
-    "org.elasticsearch"         %  "elasticsearch" % elasticSearchVersion,
-    "org.json4s"                %% "json4s-native" % json4sVersion,
-    "com.typesafe.akka"         %% "akka-actor"    % akkaVersion,
-    "com.typesafe.akka"         %% "akka-http-experimental" % akkaHttpVersion,
-    "org.scalatest"             %% "scalatest"     % scalaTestVersion % "test",
-    "com.typesafe.akka"         %% "akka-testkit"  % akkaVersion % "test"
+    "ch.qos.logback"             % "logback-classic"            % "1.1.5",
+    "org.apache.httpcomponents"  % "httpclient"                 % "4.5.1",
+    "org.elasticsearch"          % "elasticsearch"              % elasticSearchVersion,
+    "org.json4s"                %% "json4s-native"              % json4sVersion,
+    "com.typesafe.akka"         %% "akka-actor"                 % akkaVersion,
+    "com.typesafe.akka"         %% "akka-slf4j"                 % akkaVersion,
+    "com.typesafe.akka"         %% "akka-http-experimental"     % akkaHttpVersion,
+    "com.typesafe.akka"         %% "akka-http-xml-experimental" % akkaHttpVersion,
+    "org.scalatest"             %% "scalatest"                  % scalaTestVersion % "test",
+    "com.typesafe.akka"         %% "akka-testkit"               % akkaVersion % "test"
   )
 }

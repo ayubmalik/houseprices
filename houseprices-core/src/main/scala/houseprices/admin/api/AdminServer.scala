@@ -8,6 +8,8 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.marshallers.xml.ScalaXmlSupport._
 import akka.stream.ActorMaterializer
 
+case class ActiveDownloads(count: Int)
+
 trait AdminService {
 
   val routes =

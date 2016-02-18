@@ -1,5 +1,4 @@
 **/bin/
-target
 *.swp
 .cache-main
 .cache-tests
@@ -7,8 +6,16 @@ target
 .project
 .settings
 .DS_Store
+.history
+.lib/
+dist/*
 **/data
 **/.vagrant
-pp-complete.csv
-
-
+*.class
+*.log
+.history
+.lib/
+target/
+lib_managed/
+src_managed/
+project/boot/

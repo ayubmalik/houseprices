@@ -9,6 +9,9 @@ import akka.http.scaladsl.model.HttpMethods
 import scala.concurrent.ExecutionContext
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.model.HttpMethod
+import scala.concurrent.ExecutionContext
+import akka.dispatch.ExecutionContexts
+import scala.concurrent.ExecutionContext
 
 trait HttpClient {
   this: HttpRequestService =>
@@ -23,19 +26,39 @@ trait AkkaHttpRequestService extends HttpRequestService {
 
   implicit def system: ActorSystem
   implicit def materializer: ActorMaterializer
-  implicit def ec: ExecutionContext
+  implicit val ec: ExecutionContext
 
   lazy val http = Http(system)
 
   override def makeRequest(method: HttpMethod, uri: String): Future[String] = {
     val req = HttpRequest(method, uri)
     val res = http.singleRequest(req)
-    res.flatMap { r => println(r); Unmarshal(r.entity).to[String] }
+    res.flatMap { r => Unmarshal(r.entity).to[String] }
   }
 
-  def shutdown() = {
-    http.shutdownAllConnectionPools().onComplete { _ =>
-      println("http connections shutdown")
+  def shutdown() = http.shutdownAllConnectionPools
+}
+
+object AkkaHttpClient {
+  def apply(sys: ActorSystem) = {
+    new HttpClient with AkkaHttpRequestService {
+      override implicit val system = sys
+      override implicit val materializer = ActorMaterializer.create(system)
+      override implicit val ec: ExecutionContext = system.dispatcher
     }
   }
+}
+
+object HttpClientApp extends App {
+
+  val system = ActorSystem("Me")
+  implicit val ec = system.dispatcher
+
+  val client = AkkaHttpClient(system)
+  client.get("http://textfiles.com/art/simpsons.txt").onSuccess {
+    case _@ t =>
+      println(t)
+      client.shutdown.onSuccess { case _ => system.terminate }
+  }
+
 }

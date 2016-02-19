@@ -24,8 +24,6 @@ import akka.stream.ActorMaterializer
 
 class DataDownloadWorker(saveToFolder: String) extends Actor with ActorLogging {
 
-  this: HttpRequestService =>
-
   import DataDownloadMessages._
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
 

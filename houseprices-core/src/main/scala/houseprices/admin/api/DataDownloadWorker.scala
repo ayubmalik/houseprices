@@ -21,8 +21,9 @@ import akka.http.scaladsl.model.Uri.apply
 import akka.pattern.pipe
 import akka.stream.scaladsl.FileIO
 import akka.stream.ActorMaterializer
+import java.nio.charset.Charset
 
-class DataDownloadWorker(saveToFolder: String) extends Actor with ActorLogging {
+class DataDownloadWorker(client: HttpClient, saveToFolder: String) extends Actor with ActorLogging {
 
   import DataDownloadMessages._
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
@@ -35,38 +36,27 @@ class DataDownloadWorker(saveToFolder: String) extends Actor with ActorLogging {
 
   def receive = {
     case Download(url, fileName) =>
-      downloadFileFrom(url)
-      context.become(downloading(sender, url, fileName))
+      downloadFile(sender, url, makeFilePath(saveToFolder, fileName))
+      context.become(downloading)
   }
 
-  def downloading(originalSender: ActorRef, url: String, fileName: String): Receive = {
-    case HttpResponse(StatusCodes.OK, headers, entity, _) =>
-      log.info("got response")
-      saveEntityToFile(entity.withSizeLimit(oneGigabyte), originalSender, url, makeFilePath(saveToFolder, fileName))
-    case HttpResponse(code, _, _, _) =>
-      log.info("request failed, response code: " + code)
+  def downloading: Receive = {
     case _: Download => sender ! DownloadFailure("Sorry already downloading")
   }
 
-  def downloadFileFrom(url: String): Unit = {
+  def downloadFile(originalSender: ActorRef, url: String, filePath: String): Unit = {
     log.info("downloading from {}", url)
-    http.singleRequest(HttpRequest(uri = url)) pipeTo self
-  }
-
-  def saveEntityToFile(entity: ResponseEntity, sender: ActorRef, url: String, filePath: String) = {
-    entity.dataBytes.runWith(fileWriter(filePath)) onComplete { t =>
-      t match {
-        case Success(size) =>
-          log.info("completed file, size {}", size)
-          sender ! DownloadResult(url, filePath)
-        case Failure(f) => println(f)
-      }
-      context.become(receive)
+    client.get(url).map { body => saveToFile(filePath, body) } onComplete {
+      case Success(size) => originalSender ! DownloadResult(url, filePath)
+      case Failure(t) => println("An error has occured: " + t.getMessage)
     }
   }
 
-  def fileWriter(fileName: String) = {
-    FileIO.toFile(new File(fileName))
+  def saveToFile(filePath: String, body: String) = {
+    println("*** saving ****", body, filePath)
+    context.become(receive)
+    Files.write(Paths.get(filePath), body.getBytes)
+    body.length()
   }
 
   def makeFilePath(saveToFolder: String, fileName: String) = {

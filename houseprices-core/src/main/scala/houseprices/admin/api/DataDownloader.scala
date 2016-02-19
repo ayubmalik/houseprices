@@ -15,9 +15,11 @@ class DataDownloader(saveToFolder: String) extends Actor with ActorLogging {
   import DataDownloadMessages._
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
 
+  val client = AkkaHttpClient(context.system)
+
   var router = {
     val routees = Vector.fill(2) {
-      val r = context.actorOf(Props(classOf[DataDownloadWorker], saveToFolder))
+      val r = context.actorOf(Props(classOf[DataDownloadWorker], client, saveToFolder))
       context watch r
       ActorRefRoutee(r)
     }
@@ -25,7 +27,7 @@ class DataDownloader(saveToFolder: String) extends Actor with ActorLogging {
   }
 
   def receive = {
-    case d:Download =>
+    case d: Download =>
       router.route(d, sender())
     case Terminated(a) =>
       log.warning("{} is terminated", a)

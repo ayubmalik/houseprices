@@ -21,11 +21,10 @@ trait AkkaHttpRequestService extends HttpRequestService {
 
   lazy val http = Http(system)
 
-  def makeRequest(uri: String): Future[String] = {
-    println(uri)
+  override def get(uri: String): Future[String] = {
     val req = HttpRequest(HttpMethods.GET, uri)
-    val resp = http.singleRequest(req)
-    resp.flatMap { r => println(r); Unmarshal(r.entity).to[String] }
+    val res = http.singleRequest(req)
+    res.flatMap { r => println(r); Unmarshal(r.entity).to[String] }
   }
 
   def shutdown() = {

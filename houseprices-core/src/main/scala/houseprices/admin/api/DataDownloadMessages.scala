@@ -1,4 +1,4 @@
-package houseprices.csv
+package houseprices.admin.api
 
 object DataDownloadMessages {
   case class Download(url: String, fileName: String)

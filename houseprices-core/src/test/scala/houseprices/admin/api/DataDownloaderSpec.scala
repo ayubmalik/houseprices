@@ -1,15 +1,13 @@
-package houseprices.csv
+package houseprices.admin.api
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.Matchers
 import org.scalatest.WordSpecLike
-
 import akka.actor.ActorSystem
-import akka.actor.Props
-import akka.actor.actorRef2Scala
 import akka.testkit.ImplicitSender
-import akka.testkit.TestActorRef
 import akka.testkit.TestKit
+import akka.actor.Props
+import akka.testkit.TestActorRef
 
 class DataDownloaderSpec extends TestKit(ActorSystem("test"))
     with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {

@@ -1,10 +1,8 @@
-package houseprices.csv
+package houseprices.admin.api
 
 import java.util.concurrent.Executor
-
 import scala.annotation.implicitNotFound
 import scala.concurrent.ExecutionContext
-
 import akka.actor.Actor
 import akka.actor.ActorLogging
 import akka.actor.Props

@@ -1,4 +1,4 @@
-package houseprices.csv
+package houseprices.admin.api
 
 import java.io.File
 import java.nio.file.Files
@@ -8,7 +8,6 @@ import scala.annotation.implicitNotFound
 import scala.concurrent.ExecutionContext
 import scala.util.Failure
 import scala.util.Success
-import DataDownloadMessages._
 import akka.actor.Actor
 import akka.actor.ActorLogging
 import akka.actor.ActorRef
@@ -25,6 +24,7 @@ import akka.stream.ActorMaterializer
 
 class DataDownloadWorker(saveToFolder: String) extends Actor with ActorLogging {
 
+  import DataDownloadMessages._
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
 
   val oneGigabyte = 1073741824

@@ -1,4 +1,4 @@
-package houseprices.csv
+package houseprices.admin.api
 
 import scala.concurrent.duration.DurationInt
 import org.scalatest.BeforeAndAfterAll

@@ -1,6 +1,7 @@
 package houseprices.postcodes
 
-case class LatLon(lat: Double, lon: Double)
+import houseprices.LatLon
+
 
 case class Postcode(value: String) {
   def withoutSpaces = Postcode(value.replaceAll(" ", ""))

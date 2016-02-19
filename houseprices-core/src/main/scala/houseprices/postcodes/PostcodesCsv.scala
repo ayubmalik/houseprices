@@ -1,6 +1,7 @@
 package houseprices.postcodes
 
 import scala.io.Source
+import houseprices.LatLon
 
 class PostcodesCsv(val csvInputFile: String) {
 

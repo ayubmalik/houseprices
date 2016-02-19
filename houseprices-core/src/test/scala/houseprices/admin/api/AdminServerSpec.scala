@@ -9,11 +9,19 @@ import akka.http.scaladsl.model.Uri.apply
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import spray.json.DefaultJsonProtocol
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import scala.concurrent.Future
+import scala.concurrent.Promise
 
 class AdminServerSpec extends WordSpec
     with Matchers with ScalatestRouteTest with AdminService with AdminJsonProtocols {
 
   import spray.json._
+
+  val promise = Promise[String]
+
+  def client = new HttpClient with HttpRequestService {
+    def makeRequest(method: HttpMethod, uri: String) = promise.future
+  }
 
   "Admin Server" when {
 

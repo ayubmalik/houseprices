@@ -1,13 +1,18 @@
 package houseprices
 
-import org.json4s.JsonDSL._
-import org.json4s._
-import org.json4s.native.Serialization
-import org.json4s.native.Serialization.{ read, write }
+import spray.json.DefaultJsonProtocol
 
-object PricePaidToJson {
-  implicit val formats = Serialization.formats(NoTypeHints)
+object PricePaidToJson extends DefaultJsonProtocol {
+  implicit val latLon = jsonFormat2(LatLon)
+  implicit val address = jsonFormat9(Address)
+  implicit val pp = jsonFormat4(PricePaid)
 
-  def apply(pricePaid: PricePaid) = write(pricePaid)
+  import spray.json._
+
+  def apply(pricePaid: PricePaid) = {
+    val p =  pricePaid.toJson.toString()
+    println (p)
+    p
+  }
 }
 

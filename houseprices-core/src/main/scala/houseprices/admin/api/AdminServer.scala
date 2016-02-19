@@ -25,6 +25,8 @@ trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
 
 trait AdminService extends AdminJsonProtocols {
 
+  def client: HttpClient
+
   val routes =
     pathPrefix("admin") {
       path("datadownloads") {
@@ -43,9 +45,11 @@ class AdminServer(implicit val system: ActorSystem, implicit val materializer: A
     Http().bindAndHandle(routes, interface, port)
     this
   }
+
+  def client = AkkaHttpClient(system)
 }
 
-object AdminServer extends App with AdminService {
+object AdminServer extends App {
   implicit val system = ActorSystem("housepricesAdminSystem")
   implicit val materializer = ActorMaterializer()
   val config = ConfigFactory.load()

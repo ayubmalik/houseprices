@@ -8,9 +8,15 @@ import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.model.HttpMethods
 import scala.concurrent.ExecutionContext
 import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.http.scaladsl.model.HttpMethod
+
+trait HttpClient {
+  this: HttpRequestService =>
+  def get(uri: String) = makeRequest(HttpMethods.GET, uri)
+}
 
 trait HttpRequestService {
-  def get(uri: String): Future[String]
+  def makeRequest(method: HttpMethod, uri: String): Future[String]
 }
 
 trait AkkaHttpRequestService extends HttpRequestService {
@@ -21,8 +27,8 @@ trait AkkaHttpRequestService extends HttpRequestService {
 
   lazy val http = Http(system)
 
-  override def get(uri: String): Future[String] = {
-    val req = HttpRequest(HttpMethods.GET, uri)
+  override def makeRequest(method: HttpMethod, uri: String): Future[String] = {
+    val req = HttpRequest(method, uri)
     val res = http.singleRequest(req)
     res.flatMap { r => println(r); Unmarshal(r.entity).to[String] }
   }

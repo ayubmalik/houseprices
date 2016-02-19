@@ -1,5 +1,3 @@
-
-
 package houseprices.elasticsearch.config
 
 trait EsConfig {

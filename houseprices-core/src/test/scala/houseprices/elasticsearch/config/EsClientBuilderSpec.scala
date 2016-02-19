@@ -11,7 +11,7 @@ class EsClientBuilderSpec extends FlatSpec with Matchers {
     client.close()
   }
 
-  "EsClientBuilder" should "build for qa by when specified" in {
+  "EsClientBuilder" should "build for qa by when specified" ignore {
     val client = EsClientBuilder.buildClient("qa")
     client.settings().get("cluster.name") should be("qa.pricepaid")
     client.close()

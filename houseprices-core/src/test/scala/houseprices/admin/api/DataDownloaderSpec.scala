@@ -1,13 +1,22 @@
 package houseprices.admin.api
 
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationInt
+
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.Matchers
 import org.scalatest.WordSpecLike
+
+import DataDownloadMessages.Download
+import DataDownloadMessages.DownloadFailure
 import akka.actor.ActorSystem
-import akka.testkit.ImplicitSender
-import akka.testkit.TestKit
 import akka.actor.Props
+import akka.actor.actorRef2Scala
+import akka.pattern.ask
+import akka.testkit.ImplicitSender
 import akka.testkit.TestActorRef
+import akka.testkit.TestKit
+import akka.util.Timeout
 
 class DataDownloaderSpec extends TestKit(ActorSystem("test"))
     with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
@@ -30,6 +39,16 @@ class DataDownloaderSpec extends TestKit(ActorSystem("test"))
         downloader ! Download("http://made.up.url/path", "file2")
         downloader ! Download("http://made.up.url/path", "file3")
         expectMsg(DownloadFailure("Sorry already downloading"))
+      }
+
+      "should show active downloads" in {
+        import akka.pattern.ask
+        import scala.concurrent.duration._
+        implicit val timeout = Timeout(1 seconds)
+
+        val downloader = system.actorOf(Props(classOf[DataDownloader], "/tmp/1"))
+        val active = Await.result(ask(downloader, ShowActive), 1 second)
+        active should equal(ActiveDownloads(0))
       }
     }
   }

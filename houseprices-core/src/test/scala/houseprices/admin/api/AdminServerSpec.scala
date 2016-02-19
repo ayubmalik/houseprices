@@ -16,6 +16,7 @@ class AdminServerSpec extends WordSpec
     with Matchers with ScalatestRouteTest with AdminService with AdminJsonProtocols {
 
   import spray.json._
+  import DataDownloadMessages._
 
   val promise = Promise[String]
 

@@ -29,6 +29,7 @@ class DataDownloader(saveToFolder: String) extends Actor with ActorLogging {
   def receive = {
     case d: Download =>
       router.route(d, sender())
+    case ShowActive => sender ! ActiveDownloads(0)
     case Terminated(a) =>
       log.warning("{} is terminated", a)
       router = router.removeRoutee(a)

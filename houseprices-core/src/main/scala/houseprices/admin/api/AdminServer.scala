@@ -16,8 +16,7 @@ import akka.http.scaladsl.server.Directives.segmentStringToPathMatcher
 import akka.http.scaladsl.server.RouteResult.route2HandlerFlow
 import akka.stream.ActorMaterializer
 import spray.json.DefaultJsonProtocol
-
-case class ActiveDownloads(count: Int)
+import DataDownloadMessages._
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val activeFormat = jsonFormat1(ActiveDownloads)

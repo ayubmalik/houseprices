@@ -53,7 +53,6 @@ class DataDownloadWorker(client: HttpClient, saveToFolder: String) extends Actor
   }
 
   def saveToFile(filePath: String, body: String) = {
-    println("*** saving ****", body, filePath)
     context.become(receive)
     Files.write(Paths.get(filePath), body.getBytes)
     body.length()

@@ -16,7 +16,7 @@ import akka.actor.PoisonPill
 
 class DataDownloadWorkerSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
 
-  import Messages._
+  import DataDownloadMessages._
 
   def this() = this(ActorSystem("TestSystem"))
 

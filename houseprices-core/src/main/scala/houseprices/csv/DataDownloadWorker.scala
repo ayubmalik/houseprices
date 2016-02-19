@@ -8,8 +8,7 @@ import scala.annotation.implicitNotFound
 import scala.concurrent.ExecutionContext
 import scala.util.Failure
 import scala.util.Success
-import Messages.DownloadFailure
-import Messages.DownloadResult
+import DataDownloadMessages._
 import akka.actor.Actor
 import akka.actor.ActorLogging
 import akka.actor.ActorRef
@@ -25,8 +24,8 @@ import akka.stream.scaladsl.FileIO
 import akka.stream.ActorMaterializer
 
 class DataDownloadWorker(saveToFolder: String) extends Actor with ActorLogging {
+
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
-  import Messages._
 
   val oneGigabyte = 1073741824
   val http = Http(context.system)

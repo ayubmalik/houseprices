@@ -10,7 +10,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object DataDownloadApp extends App {
 
-  import Messages._
+  import DataDownloadMessages._
 
   val file1 = "http://prod1.publicdata.landregistry.gov.uk.s3-website-eu-west-1.amazonaws.com/pp-2015.csv"
   val file2 = "http://prod1.publicdata.landregistry.gov.uk.s3-website-eu-west-1.amazonaws.com/pp-monthly-update-new-version.csv"

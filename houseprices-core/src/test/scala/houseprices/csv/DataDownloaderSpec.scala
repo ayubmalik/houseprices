@@ -11,9 +11,10 @@ import akka.testkit.ImplicitSender
 import akka.testkit.TestActorRef
 import akka.testkit.TestKit
 
-
 class DataDownloaderSpec extends TestKit(ActorSystem("test"))
     with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
+
+  import DataDownloadMessages._
 
   "DataDownloader" when {
 
@@ -27,10 +28,10 @@ class DataDownloaderSpec extends TestKit(ActorSystem("test"))
     "running" should {
       "should limit downloads" in {
         val downloader = system.actorOf(Props(classOf[DataDownloader], "/tmp/1"))
-        downloader ! Messages.Download("http://made.up.url/path", "file1")
-        downloader ! Messages.Download("http://made.up.url/path", "file2")
-        downloader ! Messages.Download("http://made.up.url/path", "file3")
-        expectMsg(Messages.DownloadFailure("Sorry already downloading"))
+        downloader ! Download("http://made.up.url/path", "file1")
+        downloader ! Download("http://made.up.url/path", "file2")
+        downloader ! Download("http://made.up.url/path", "file3")
+        expectMsg(DownloadFailure("Sorry already downloading"))
       }
     }
   }

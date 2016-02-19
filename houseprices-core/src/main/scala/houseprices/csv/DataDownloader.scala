@@ -13,7 +13,8 @@ import akka.routing.ActorRefRoutee
 import akka.routing.RoundRobinRoutingLogic
 import akka.routing.Router
 
-class DataDownloader(saveToFolder: String) extends Actor  with ActorLogging {
+class DataDownloader(saveToFolder: String) extends Actor with ActorLogging {
+  import DataDownloadMessages._
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
 
   var router = {
@@ -26,7 +27,7 @@ class DataDownloader(saveToFolder: String) extends Actor  with ActorLogging {
   }
 
   def receive = {
-    case d: Messages.Download =>
+    case d:Download =>
       router.route(d, sender())
     case Terminated(a) =>
       log.warning("{} is terminated", a)

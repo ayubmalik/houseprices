@@ -14,7 +14,7 @@ import java.nio.file.Paths
 import java.nio.file.Files
 import akka.actor.PoisonPill
 
-class DownloadWorkerSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
+class DataDownloadWorkerSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
 
   import Messages._
 

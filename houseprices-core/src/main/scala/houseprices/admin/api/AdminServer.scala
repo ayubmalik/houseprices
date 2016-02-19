@@ -30,7 +30,7 @@ trait AdminService extends AdminJsonProtocols {
       path("datadownloads") {
         get {
           complete {
-            ActiveDownloads(1)
+            ActiveDownloads(0)
           }
         }
       }

@@ -33,7 +33,7 @@ class AdminServerSpec extends WordSpec
         val getRequest = HttpRequest(HttpMethods.GET, uri = "/admin/datadownloads")
         getRequest ~> routes ~> check {
           status.isSuccess() shouldEqual true
-          val active = ActiveWorkers(0)
+          val active = ActiveWorkers(2)
           responseEntity shouldEqual HttpEntity(`application/json`, active.toJson.prettyPrint)
         }
 

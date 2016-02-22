@@ -1,8 +1,9 @@
 package houseprices.admin.api
 
 import com.typesafe.config.ConfigFactory
-
+import DataDownloadMessages._
 import akka.actor.ActorSystem
+import akka.actor.Props
 import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
@@ -14,8 +15,12 @@ import akka.http.scaladsl.server.Directives.path
 import akka.http.scaladsl.server.Directives.pathPrefix
 import akka.http.scaladsl.server.Directives.segmentStringToPathMatcher
 import akka.http.scaladsl.server.RouteResult.route2HandlerFlow
+import akka.pattern.ask
 import akka.stream.ActorMaterializer
+import akka.util.Timeout
 import spray.json.DefaultJsonProtocol
+import scala.concurrent.duration._
+import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import DataDownloadMessages._
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
@@ -24,6 +29,11 @@ trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
 
 trait AdminService extends AdminJsonProtocols {
 
+  implicit val system: ActorSystem
+  implicit val timeout = Timeout(5 seconds)
+
+  val downloader = system.actorOf(Props(classOf[DataDownloader], "/tmp/houseprices"))
+
   def client: HttpClient
 
   val routes =
@@ -31,7 +41,7 @@ trait AdminService extends AdminJsonProtocols {
       path("datadownloads") {
         get {
           complete {
-            ActiveWorkers(0)
+            (downloader ? ShowActive).mapTo[ActiveWorkers]
           }
         }
       }

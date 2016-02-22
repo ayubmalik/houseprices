@@ -47,7 +47,7 @@ class DataDownloaderSpec extends TestKit(ActorSystem("test"))
         implicit val timeout = Timeout(1 seconds)
 
         val downloader = system.actorOf(Props(classOf[DataDownloader], "/tmp/1"))
-        var active = Await.result(ask(downloader, ShowActive), 1 second)
+        var active = Await.result(ask(downloader, ShowActive), 500 millis)
         active should equal(ActiveWorkers(2))
 
       }

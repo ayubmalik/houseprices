@@ -28,12 +28,12 @@ class AdminServerSpec extends WordSpec
 
     "url is /admin/datadownloads" should {
 
-      "return current downloads for GET" in {
+      "return active workers for GET" in {
 
         val getRequest = HttpRequest(HttpMethods.GET, uri = "/admin/datadownloads")
         getRequest ~> routes ~> check {
           status.isSuccess() shouldEqual true
-          val active = ActiveDownloads(0)
+          val active = ActiveWorkers(0)
           responseEntity shouldEqual HttpEntity(`application/json`, active.toJson.prettyPrint)
         }
 

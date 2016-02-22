@@ -5,5 +5,5 @@ object DataDownloadMessages {
   case class DownloadResult(url: String, filePath: String)
   case class DownloadFailure(msg: String)
   case class ShowActive()
-  case class ActiveDownloads(count: Int)
+  case class ActiveWorkers(count: Int)
 }

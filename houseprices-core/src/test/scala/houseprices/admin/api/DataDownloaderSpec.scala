@@ -41,14 +41,15 @@ class DataDownloaderSpec extends TestKit(ActorSystem("test"))
         expectMsg(DownloadFailure("Sorry already downloading"))
       }
 
-      "should show active downloads" in {
+      "should show active workers" in {
         import akka.pattern.ask
         import scala.concurrent.duration._
         implicit val timeout = Timeout(1 seconds)
 
         val downloader = system.actorOf(Props(classOf[DataDownloader], "/tmp/1"))
-        val active = Await.result(ask(downloader, ShowActive), 1 second)
-        active should equal(ActiveDownloads(0))
+        var active = Await.result(ask(downloader, ShowActive), 1 second)
+        active should equal(ActiveWorkers(0))
+
       }
     }
   }

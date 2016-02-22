@@ -19,7 +19,7 @@ import spray.json.DefaultJsonProtocol
 import DataDownloadMessages._
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val activeFormat = jsonFormat1(ActiveDownloads)
+  implicit val activeFormat = jsonFormat1(ActiveWorkers)
 }
 
 trait AdminService extends AdminJsonProtocols {
@@ -31,7 +31,7 @@ trait AdminService extends AdminJsonProtocols {
       path("datadownloads") {
         get {
           complete {
-            ActiveDownloads(0)
+            ActiveWorkers(0)
           }
         }
       }

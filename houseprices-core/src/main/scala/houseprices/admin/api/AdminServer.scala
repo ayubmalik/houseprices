@@ -1,7 +1,11 @@
 package houseprices.admin.api
 
+import scala.concurrent.duration.DurationInt
+
 import com.typesafe.config.ConfigFactory
-import DataDownloadMessages._
+
+import DataDownloadMessages.ActiveWorkers
+import DataDownloadMessages.ShowActive
 import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.event.Logging
@@ -9,19 +13,17 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.marshalling.ToResponseMarshallable.apply
 import akka.http.scaladsl.server.Directive.addByNameNullaryApply
-import akka.http.scaladsl.server.Directives.complete
+import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Directives.get
 import akka.http.scaladsl.server.Directives.path
 import akka.http.scaladsl.server.Directives.pathPrefix
+import akka.http.scaladsl.server.Directives.post
 import akka.http.scaladsl.server.Directives.segmentStringToPathMatcher
 import akka.http.scaladsl.server.RouteResult.route2HandlerFlow
 import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import spray.json.DefaultJsonProtocol
-import scala.concurrent.duration._
-import akka.http.scaladsl.marshalling.ToResponseMarshallable
-import DataDownloadMessages._
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val activeFormat = jsonFormat1(ActiveWorkers)
@@ -43,7 +45,12 @@ trait AdminService extends AdminJsonProtocols {
           complete {
             (downloader ? ShowActive).mapTo[ActiveWorkers]
           }
-        }
+        } ~
+          post {
+            complete {
+              "post placeholder"
+            }
+          }
       }
     }
 }

@@ -48,7 +48,7 @@ class DataDownloaderSpec extends TestKit(ActorSystem("test"))
 
         val downloader = system.actorOf(Props(classOf[DataDownloader], "/tmp/1"))
         var active = Await.result(ask(downloader, ShowActive), 1 second)
-        active should equal(ActiveWorkers(0))
+        active should equal(ActiveWorkers(2))
 
       }
     }

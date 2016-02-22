@@ -17,8 +17,6 @@ class DataDownloader(saveToFolder: String) extends Actor with ActorLogging {
 
   val client = AkkaHttpClient(context.system)
 
-  var active = List.empty[Download]
-
   var router = {
     val routees = Vector.fill(2) {
       val r = context.actorOf(Props(classOf[DataDownloadWorker], client, saveToFolder))
@@ -30,9 +28,8 @@ class DataDownloader(saveToFolder: String) extends Actor with ActorLogging {
 
   def receive = {
     case d: Download =>
-      active = d :: active
       router.route(d, sender())
-    case ShowActive => sender ! ActiveWorkers(active.size)
+    case ShowActive => sender ! ActiveWorkers(router.routees.size)
 
     case Terminated(a) =>
       log.warning("{} is terminated", a)

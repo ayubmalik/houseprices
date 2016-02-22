@@ -7,10 +7,10 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
-
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
 import org.elasticsearch.common.settings.ImmutableSettings
 import org.elasticsearch.node.NodeBuilder
+import houseprices.elasticsearch.config.EsClientBuilder
 
 class EmbeddedNode(settings: Map[String, String]) {
 
@@ -29,6 +29,7 @@ class EmbeddedNode(settings: Map[String, String]) {
     settingsBuilder.put("path.data", dataPath)
 
   private lazy val node = NodeBuilder.nodeBuilder()
+    .clusterName("dev.pricepaid")
     .local(true)
     .settings(settingsBuilder.build())
     .build()
@@ -85,4 +86,10 @@ object EmbeddedNode {
   def apply() = {
     new EmbeddedNode(defaultSettings)
   }
+}
+
+object EsServer extends App {
+  val client = EsClientBuilder.buildClient("dev")
+
+  println("node started", client)
 }

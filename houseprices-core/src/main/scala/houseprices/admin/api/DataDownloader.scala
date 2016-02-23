@@ -11,6 +11,7 @@ import akka.routing.ActorRefRoutee
 import akka.routing.RoundRobinRoutingLogic
 import akka.routing.Router
 
+@deprecated("use DataDownloadManager", "")
 class DataDownloader(saveToFolder: String) extends Actor with ActorLogging {
   import DataDownloadMessages._
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]

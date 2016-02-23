@@ -21,10 +21,10 @@ class DataDownloadManager(saveToFolder: String, client: HttpClient) extends Acto
   def receive = {
     case download: Download =>
       addDownload(download, sender)
-    case ShowActive => sender ! ActiveWorkers(active.keys.size)
+    case ShowActive => sender ! ActiveWorkers(active.size)
     case DownloadResult(url, filepath) =>
-      println("todo")
-
+      val (download, sender) = active(url)
+      sender ! DownloadResult(url, filepath)
   }
 
   def addDownload(download: Download, orig: ActorRef) = {

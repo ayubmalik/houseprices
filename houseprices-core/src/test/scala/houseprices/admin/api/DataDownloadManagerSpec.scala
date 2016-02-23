@@ -17,9 +17,10 @@ import akka.testkit.TestKit
 import akka.util.Timeout
 import akka.http.scaladsl.model.HttpMethod
 import scala.concurrent.Future
+import org.scalatest.BeforeAndAfterEach
 
 class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
-    with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
+    with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterEach {
 
   import DataDownloadMessages._
   implicit val ec = system.dispatcher
@@ -33,9 +34,9 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
     "running" should {
       "should limit downloads" in {
         val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/1", client))
-        downloader ! Download("http://url1", "file1")
-        downloader ! Download("http://url2", "file2")
-        downloader ! Download("http://url3", "file3")
+        downloader ! Download("url1", "file1")
+        downloader ! Download("url2", "file2")
+        downloader ! Download("url3", "file3")
         expectMsg(DownloadFailure("Sorry max limit reached"))
       }
 
@@ -44,10 +45,19 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
         import scala.concurrent.duration._
         implicit val timeout = Timeout(1 seconds)
 
-        val downloader = system.actorOf(Props(classOf[DataDownloader], "/tmp/1", client))
-        var active = Await.result(ask(downloader, ShowActive), 500 millis)
-        active should equal(ActiveWorkers(2))
+        val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/1", client))
+        downloader ! Download("http://url1", "file1")
+        val active = Await.result(ask(downloader, ShowActive), 100 millis)
+        active should equal(ActiveWorkers(1))
+      }
 
+      "should send DownloadResult to sender" in {
+        val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/1", client))
+        downloader ! Download("http://someurl", "file1")
+        ignoreMsg {
+          case DownloadResult(url, f) => url.startsWith("url")
+        }
+        expectMsg(DownloadResult("http://someurl", "/tmp/1/file1"))
       }
     }
   }

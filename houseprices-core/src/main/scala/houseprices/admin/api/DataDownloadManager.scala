@@ -12,11 +12,10 @@ import akka.routing.RoundRobinRoutingLogic
 import akka.routing.Router
 import akka.actor.ActorRef
 
-class DataDownloadManager(saveToFolder: String) extends Actor with ActorLogging {
+class DataDownloadManager(saveToFolder: String, client: HttpClient) extends Actor with ActorLogging {
   import DataDownloadMessages._
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
 
-  val client = AkkaHttpClient(context.system)
   var active = Map.empty[String, (Download, ActorRef)]
 
   def receive = {

@@ -38,7 +38,6 @@ trait AdminService extends AdminJsonProtocols {
   def client: HttpClient
   val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", client))
 
-
   val routes =
     pathPrefix("admin") {
       path("datadownloads") {

@@ -47,9 +47,12 @@ trait AdminService extends AdminJsonProtocols {
           }
         } ~
           post {
-            complete {
-              "post placeholder"
+            entity(as[String]) { dataFileUrl =>
+              complete {
+                "post placeholder: " + dataFileUrl
+              }
             }
+
           }
       }
     }

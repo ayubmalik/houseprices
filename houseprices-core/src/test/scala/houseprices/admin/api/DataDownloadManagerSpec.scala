@@ -46,18 +46,18 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
         implicit val timeout = Timeout(1 seconds)
 
         val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/1", client))
-        downloader ! Download("http://url1", "file1")
+        downloader ! Download("url1", "file1")
         val active = Await.result(ask(downloader, ShowActive), 100 millis)
         active should equal(ActiveWorkers(1))
       }
 
       "should send DownloadResult to sender" in {
         val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/1", client))
-        downloader ! Download("http://someurl", "file1")
+        downloader ! Download("someurl", "file1")
         ignoreMsg {
           case DownloadResult(url, f) => url.startsWith("url")
         }
-        expectMsg(DownloadResult("http://someurl", "/tmp/1/file1"))
+        expectMsg(DownloadResult("someurl", "/tmp/1/file1"))
       }
     }
   }

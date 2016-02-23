@@ -16,21 +16,22 @@ class DataDownloadManager(saveToFolder: String, client: HttpClient) extends Acto
   import DataDownloadMessages._
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
 
-  var active = Map.empty[String, (Download, ActorRef)]
+  var activeDownloads = Map.empty[String, (Download, ActorRef)]
 
   def receive = {
     case download: Download =>
       addDownload(download, sender)
-    case ShowActive => sender ! ActiveWorkers(active.size)
+    case ShowActive => sender ! ActiveWorkers(activeDownloads.size)
     case DownloadResult(url, filepath) =>
-      val (download, sender) = active(url)
+      val (download, sender) = activeDownloads(url)
+      activeDownloads = activeDownloads.filterKeys { k => k != download.url }
       sender ! DownloadResult(url, filepath)
   }
 
   def addDownload(download: Download, orig: ActorRef) = {
-    if (active.size == 2) orig ! DownloadFailure("Sorry max limit reached")
+    if (activeDownloads.size == 2) orig ! DownloadFailure("Sorry max limit reached")
     else {
-      active += (download.url -> (download, sender))
+      activeDownloads += (download.url -> (download, sender))
       val worker = context.actorOf(Props(classOf[DataDownloadWorker], client, saveToFolder))
       worker ! download
     }

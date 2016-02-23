@@ -1,9 +1,7 @@
 package houseprices.admin.api
 
 import scala.concurrent.duration.DurationInt
-
 import com.typesafe.config.ConfigFactory
-
 import DataDownloadMessages.ActiveDownloads
 import DataDownloadMessages._
 import akka.actor.ActorSystem
@@ -24,6 +22,8 @@ import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import spray.json.DefaultJsonProtocol
+import scala.concurrent.Future
+import akka.http.scaladsl.model.HttpResponse
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val activeFormat1 = jsonFormat3(ActiveDownload)
@@ -34,6 +34,8 @@ trait AdminService extends AdminJsonProtocols {
 
   implicit val system: ActorSystem
   implicit val timeout = Timeout(5 seconds)
+
+  import DataDownloadMessages._
 
   def client: HttpClient
   val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", client))
@@ -48,11 +50,10 @@ trait AdminService extends AdminJsonProtocols {
         } ~
           post {
             entity(as[String]) { dataFileUrl =>
-              complete {
-                "post placeholder: " + dataFileUrl
-              }
+              if (dataFileUrl.isEmpty) complete(HttpResponse(status = 400))
+              else
+                complete(HttpResponse(status = 202))
             }
-
           }
       }
     }

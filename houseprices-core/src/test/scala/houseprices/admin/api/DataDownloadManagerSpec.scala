@@ -47,8 +47,8 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
 
         val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/1", client))
         downloader ! Download("url1", "file1")
-        val active = Await.result(ask(downloader, ShowActive), 100 millis)
-        active should equal(ActiveWorkers(1))
+        val active: ActiveDownloads = Await.result(ask(downloader, ShowActive), 100 millis).asInstanceOf[ActiveDownloads]
+        active.count should be(1)
       }
 
       "should send DownloadResult to sender" in {

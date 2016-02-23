@@ -11,17 +11,19 @@ import akka.routing.ActorRefRoutee
 import akka.routing.RoundRobinRoutingLogic
 import akka.routing.Router
 import akka.actor.ActorRef
+import java.time.LocalDateTime
 
 class DataDownloadManager(saveToFolder: String, client: HttpClient) extends Actor with ActorLogging {
   import DataDownloadMessages._
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
 
-  var activeDownloads = Map.empty[String, (Download, ActorRef)]
+  var activeDownloads = Map.empty[String, (ActiveDownload, ActorRef)]
 
   def receive = {
     case download: Download =>
       addDownload(download, sender)
-    case ShowActive => sender ! ActiveWorkers(activeDownloads.size)
+    case ShowActive =>
+      sender ! ActiveDownloads(activeDownloads.size, activeDownloads.values.map(t => t._1).toList)
     case DownloadResult(url, filepath) =>
       val (download, sender) = activeDownloads(url)
       activeDownloads = activeDownloads.filterKeys { k => k != download.url }
@@ -31,7 +33,7 @@ class DataDownloadManager(saveToFolder: String, client: HttpClient) extends Acto
   def addDownload(download: Download, orig: ActorRef) = {
     if (activeDownloads.size == 2) orig ! DownloadFailure("Sorry max limit reached")
     else {
-      activeDownloads += (download.url -> (download, sender))
+      activeDownloads += (download.url -> (ActiveDownload(download.url, download.fileName, LocalDateTime.now.toString()), sender))
       val worker = context.actorOf(Props(classOf[DataDownloadWorker], client, saveToFolder))
       worker ! download
     }

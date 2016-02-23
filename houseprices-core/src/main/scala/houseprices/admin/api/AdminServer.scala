@@ -4,8 +4,8 @@ import scala.concurrent.duration.DurationInt
 
 import com.typesafe.config.ConfigFactory
 
-import DataDownloadMessages.ActiveWorkers
-import DataDownloadMessages.ShowActive
+import DataDownloadMessages.ActiveDownloads
+import DataDownloadMessages._
 import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.event.Logging
@@ -26,7 +26,8 @@ import akka.util.Timeout
 import spray.json.DefaultJsonProtocol
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val activeFormat = jsonFormat1(ActiveWorkers)
+  implicit val activeFormat1 = jsonFormat3(ActiveDownload)
+  implicit val activeFormat2 = jsonFormat2(ActiveDownloads)
 }
 
 trait AdminService extends AdminJsonProtocols {
@@ -34,16 +35,16 @@ trait AdminService extends AdminJsonProtocols {
   implicit val system: ActorSystem
   implicit val timeout = Timeout(5 seconds)
 
-  val downloader = system.actorOf(Props(classOf[DataDownloader], "/tmp/houseprices"))
-
   def client: HttpClient
+  val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", client))
+
 
   val routes =
     pathPrefix("admin") {
       path("datadownloads") {
         get {
           complete {
-            (downloader ? ShowActive).mapTo[ActiveWorkers]
+            (downloader ? ShowActive).mapTo[ActiveDownloads]
           }
         } ~
           post {

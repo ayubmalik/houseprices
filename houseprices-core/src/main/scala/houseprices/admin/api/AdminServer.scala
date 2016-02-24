@@ -56,9 +56,10 @@ trait AdminService extends AdminJsonProtocols {
           post {
             entity(as[Download]) { download =>
               if (download.url.isEmpty) complete(HttpResponse(status = 400))
-              else
-                println("download: " + download)
-              complete(HttpResponse(status = 202))
+              else {
+                downloader ! download
+                complete(HttpResponse(status = 202))
+              }
             }
           }
       }

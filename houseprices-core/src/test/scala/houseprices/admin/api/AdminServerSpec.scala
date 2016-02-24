@@ -15,6 +15,7 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.http.scaladsl.model.HttpEntity
 import akka.http.scaladsl.model.HttpMethods
 import akka.http.scaladsl.server.UnsupportedRequestContentTypeRejection
+import akka.event.Logging
 
 class AdminServerSpec extends WordSpec
     with Matchers with ScalatestRouteTest with AdminService with AdminJsonProtocols {
@@ -22,10 +23,10 @@ class AdminServerSpec extends WordSpec
   import spray.json._
   import DataDownloadMessages._
 
-  val promise = Promise[String]
+  val logger = null
 
   def client = new HttpClient with HttpRequestService {
-    def makeRequest(method: HttpMethod, uri: String) = promise.future
+    def makeRequest(method: HttpMethod, uri: String) = Promise[String].future
   }
 
   "Admin Server" when {

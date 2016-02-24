@@ -24,6 +24,7 @@ import akka.util.Timeout
 import spray.json.DefaultJsonProtocol
 import scala.concurrent.Future
 import akka.http.scaladsl.model.HttpResponse
+import akka.event.LoggingAdapter
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val format1 = jsonFormat3(ActiveDownload)
@@ -40,6 +41,8 @@ trait AdminService extends AdminJsonProtocols {
   import DataDownloadMessages._
 
   def client: HttpClient
+  val logger: LoggingAdapter
+
   val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", client))
 
   val routes =
@@ -55,7 +58,7 @@ trait AdminService extends AdminJsonProtocols {
               if (download.url.isEmpty) complete(HttpResponse(status = 400))
               else
                 println("download: " + download)
-                complete(HttpResponse(status = 202))
+              complete(HttpResponse(status = 202))
             }
           }
       }
@@ -66,19 +69,19 @@ class AdminServer(implicit val system: ActorSystem, implicit val materializer: A
 
   def startServer(interface: String, port: Int) = {
     Http().bindAndHandle(routes, interface, port)
+    logger.info("Admin server ready at {}:{}", interface, port)
     this
   }
 
   def client = AkkaHttpClient(system)
+  val logger = Logging(system, getClass)
 }
 
 object AdminServer extends App {
   implicit val system = ActorSystem("housepricesAdminSystem")
   implicit val materializer = ActorMaterializer()
   val config = ConfigFactory.load()
-  val logger = Logging(system, getClass)
 
   val (interface, port) = (config.getString("akka.http.interface"), config.getInt("akka.http.port"))
   val server = new AdminServer().startServer(interface, port)
-  logger.info(s"Server ready at {}:{}", interface, port)
 }

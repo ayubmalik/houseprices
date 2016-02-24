@@ -26,8 +26,10 @@ import scala.concurrent.Future
 import akka.http.scaladsl.model.HttpResponse
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val activeFormat1 = jsonFormat3(ActiveDownload)
-  implicit val activeFormat2 = jsonFormat2(ActiveDownloads)
+  implicit val format1 = jsonFormat3(ActiveDownload)
+  implicit val format2 = jsonFormat2(ActiveDownloads)
+  implicit val format3 = jsonFormat2(Download)
+
 }
 
 trait AdminService extends AdminJsonProtocols {
@@ -49,8 +51,8 @@ trait AdminService extends AdminJsonProtocols {
           }
         } ~
           post {
-            entity(as[String]) { dataFileUrl =>
-              if (dataFileUrl.isEmpty) complete(HttpResponse(status = 400))
+            entity(as[Download]) { download =>
+              if (download.url.isEmpty) complete(HttpResponse(status = 400))
               else
                 complete(HttpResponse(status = 202))
             }

@@ -1,17 +1,20 @@
 package houseprices.admin.api
 
-import org.scalatest.Matchers
-import org.scalatest.WordSpec
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.HttpRequest
-import akka.http.scaladsl.model.MediaTypes._
-import akka.http.scaladsl.model.Uri.apply
-import akka.http.scaladsl.testkit.ScalatestRouteTest
-import spray.json.DefaultJsonProtocol
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import scala.concurrent.Future
 import scala.concurrent.Promise
+import org.scalatest.Matchers
+import org.scalatest.WordSpec
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.marshalling.Marshal
+import akka.http.scaladsl.model.HttpMethod
+import akka.http.scaladsl.model.HttpRequest
+import akka.http.scaladsl.model.MediaTypes._
+import akka.http.scaladsl.model.RequestEntity
+import akka.http.scaladsl.model.Uri.apply
+import akka.http.scaladsl.testkit.ScalatestRouteTest
+import akka.http.scaladsl.model.HttpEntity
+import akka.http.scaladsl.model.HttpMethods
+import akka.http.scaladsl.server.UnsupportedRequestContentTypeRejection
 
 class AdminServerSpec extends WordSpec
     with Matchers with ScalatestRouteTest with AdminService with AdminJsonProtocols {
@@ -40,18 +43,18 @@ class AdminServerSpec extends WordSpec
       }
 
       "return 202 for POST" in {
-
-        val post = Post("/admin/datadownloads", "some url")
+        val post = Post("/admin/datadownloads", HttpEntity(`application/json`, """{"url": "hello url", "fileName":"file name"}"""))
         post ~> routes ~> check {
           status.intValue shouldEqual 202
         }
       }
 
-      "return 400 for POST with missing url" in {
+      "reject POST for non JSON body" in {
         val body = Marshal("data file url").to[RequestEntity]
-        val post = Post("/admin/datadownloads")
+        val post = Post("/admin/datadownloads", "not json")
         post ~> routes ~> check {
-          status.intValue shouldEqual 400
+          rejection shouldEqual UnsupportedRequestContentTypeRejection(Set(`application/json`))
+          //handled shouldEqual false
         }
       }
     }

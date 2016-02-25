@@ -22,7 +22,7 @@ import akka.testkit.TestActorRef
 import akka.testkit.TestKit
 import akka.util.Timeout
 
-class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
+class DataDownloadManagerSpec extends TestKit(ActorSystem("datadownloadmanager"))
     with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterEach {
 
   import DataDownloadMessages._

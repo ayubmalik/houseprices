@@ -29,6 +29,8 @@ import houseprices.admin.datadownload.HttpClient
 import houseprices.admin.datadownload.AkkaHttpClient
 import houseprices.elasticsearch.config.EsClientBuilder
 import houseprices.elasticsearch.HousePriceIndex
+import houseprices.admin.dataimport.DataImporter
+import houseprices.admin.dataimport.ImportData
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val format1 = jsonFormat3(ActiveDownload)
@@ -46,6 +48,7 @@ trait AdminService extends AdminJsonProtocols {
   val log: LoggingAdapter
 
   val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", client))
+  val importer = system.actorOf(Props(classOf[DataImporter], "/tmp/houseprices"))
 
   val routes =
     pathPrefix("admin") {
@@ -66,10 +69,11 @@ trait AdminService extends AdminJsonProtocols {
           }
       } ~
         path("dataimports") {
-          entity(as[String]) { csvFileToImport =>
-            if (csvFileToImport.isEmpty) complete(HttpResponse(status = 400))
+          entity(as[String]) { csvFile =>
+            if (csvFile.isEmpty) complete(HttpResponse(status = 400))
             else {
-              complete("TODO")
+              importer ! ImportData(csvFile)
+              complete(HttpResponse(status = 202))
             }
           }
         }

@@ -68,7 +68,7 @@ class AdminServerSpec extends WordSpec
 
         val post = Post("/admin/dataimports", "csv file")
         post ~> routes ~> check {
-          status.isSuccess() shouldEqual true
+         status.intValue shouldEqual 202
         }
       }
     }

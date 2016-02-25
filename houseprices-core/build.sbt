@@ -23,3 +23,5 @@ libraryDependencies ++= {
     "com.typesafe.akka"         %% "akka-http-testkit-experimental"    % "2.4.2-RC3" % "test"
   )
 }
+
+fork in (Test) := true

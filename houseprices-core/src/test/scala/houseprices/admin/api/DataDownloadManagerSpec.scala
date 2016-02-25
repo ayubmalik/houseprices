@@ -27,7 +27,7 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
 
   val client = new HttpClient with HttpRequestService {
     def makeRequest(method: HttpMethod, uri: String) = Future {
-      Thread.sleep(50) // simulate time
+      Thread.sleep(25) // simulate delay
       "Hello There"
     }
   }
@@ -53,7 +53,7 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
         ignoreMsg {
           case DownloadResult(url, f) => url.startsWith("someurl")
         }
-        val active: ActiveDownloads = Await.result(ask(downloader, ShowActive), 100 millis).asInstanceOf[ActiveDownloads]
+        val active: ActiveDownloads = Await.result(ask(downloader, ShowActive), 50 millis).asInstanceOf[ActiveDownloads]
         println(active)
         active.count should be(1)
       }

@@ -88,8 +88,7 @@ object EmbeddedNode {
   }
 }
 
-object EsServer extends App {
+object EmbeddedNodeApp extends App {
   val client = EsClientBuilder.buildClient("dev")
-
-  println("node started", client)
+  println("ES up: http://localhost:9200/pricepaid/uk/_count")
 }

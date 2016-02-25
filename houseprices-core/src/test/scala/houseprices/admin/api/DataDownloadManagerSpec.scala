@@ -26,7 +26,10 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
   implicit val ec = system.dispatcher
 
   val client = new HttpClient with HttpRequestService {
-    def makeRequest(method: HttpMethod, uri: String) = Future { "Hello There" }
+    def makeRequest(method: HttpMethod, uri: String) = Future {
+      Thread.sleep(50) // simulate time
+      "Hello There"
+    }
   }
 
   "DataDownloadManager" when {
@@ -45,19 +48,23 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
         import scala.concurrent.duration._
         implicit val timeout = Timeout(1 seconds)
 
-        val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/1", client))
+        val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", client))
         downloader ! Download("url1", "file1")
+        ignoreMsg {
+          case DownloadResult(url, f) => url.startsWith("someurl")
+        }
         val active: ActiveDownloads = Await.result(ask(downloader, ShowActive), 100 millis).asInstanceOf[ActiveDownloads]
+        println(active)
         active.count should be(1)
       }
 
       "should send DownloadResult to sender" in {
-        val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/1", client))
+        val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", client))
         downloader ! Download("someurl", "file1")
         ignoreMsg {
           case DownloadResult(url, f) => url.startsWith("url")
         }
-        expectMsg(DownloadResult("someurl", "/tmp/1/file1"))
+        expectMsg(DownloadResult("someurl", "/tmp/houseprices/file1"))
       }
     }
   }

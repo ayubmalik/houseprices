@@ -29,7 +29,7 @@ class DataDownloadManager(saveToFolder: String, client: HttpClient) extends Acto
       activeDownloads = activeDownloads.filterKeys { k => k != download.url }
       originalSender ! DownloadResult(url, filepath)
     case DownloadFailure(msg) =>
-      println("*** " + msg + " ***")
+      log.error("*** " + msg + " ***")
   }
 
   def addDownload(download: Download, orig: ActorRef) = {

@@ -28,9 +28,6 @@ class DataDownloadWorker(client: HttpClient, saveToFolder: String) extends Actor
   import DataDownloadMessages._
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
 
-  val http = Http(context.system)
-  implicit val materializer = ActorMaterializer()
-
   createFolder(saveToFolder)
 
   def receive = {
@@ -63,11 +60,6 @@ class DataDownloadWorker(client: HttpClient, saveToFolder: String) extends Actor
 
   def createFolder(folder: String) {
     Files.createDirectories(Paths.get(folder))
-  }
-
-  override def postStop() = {
-    http.shutdownAllConnectionPools()
-    log.info("shutdown http conn pools")
   }
 
 }

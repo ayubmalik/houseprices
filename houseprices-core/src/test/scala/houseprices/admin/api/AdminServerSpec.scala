@@ -1,27 +1,30 @@
 package houseprices.admin.api
 
-import scala.concurrent.Future
 import scala.concurrent.Promise
+
 import org.scalatest.Matchers
 import org.scalatest.WordSpec
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+
 import akka.http.scaladsl.marshalling.Marshal
-import akka.http.scaladsl.model.HttpMethod
-import akka.http.scaladsl.model.HttpRequest
-import akka.http.scaladsl.model.MediaTypes._
-import akka.http.scaladsl.model.RequestEntity
-import akka.http.scaladsl.model.Uri.apply
-import akka.http.scaladsl.testkit.ScalatestRouteTest
+import akka.http.scaladsl.model.ContentType.apply
+import akka.http.scaladsl.model.ContentTypeRange.apply
 import akka.http.scaladsl.model.HttpEntity
+import akka.http.scaladsl.model.HttpMethod
 import akka.http.scaladsl.model.HttpMethods
+import akka.http.scaladsl.model.HttpRequest
+import akka.http.scaladsl.model.RequestEntity
+import akka.http.scaladsl.model.MediaTypes._
 import akka.http.scaladsl.server.UnsupportedRequestContentTypeRejection
-import akka.event.Logging
+import akka.http.scaladsl.testkit.ScalatestRouteTest
+import houseprices.admin.datadownload.DataDownloadMessages.ActiveDownloads
+import houseprices.admin.datadownload.HttpClient
+import houseprices.admin.datadownload.HttpRequestService
+import spray.json.pimpAny
 
 class AdminServerSpec extends WordSpec
     with Matchers with ScalatestRouteTest with AdminService with AdminJsonProtocols {
 
   import spray.json._
-  import DataDownloadMessages._
 
   val logger = null
 

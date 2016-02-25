@@ -1,27 +1,19 @@
-package houseprices.admin.api
+package houseprices.admin.datadownload
 
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.Executor
-import scala.annotation.implicitNotFound
+
 import scala.concurrent.ExecutionContext
 import scala.util.Failure
 import scala.util.Success
+
+import DataDownloadMessages.DownloadFailure
+import DataDownloadMessages.DownloadResult
 import akka.actor.Actor
 import akka.actor.ActorLogging
 import akka.actor.ActorRef
 import akka.actor.actorRef2Scala
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.HttpRequest
-import akka.http.scaladsl.model.HttpResponse
-import akka.http.scaladsl.model.ResponseEntity
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.model.Uri.apply
-import akka.pattern.pipe
-import akka.stream.scaladsl.FileIO
-import akka.stream.ActorMaterializer
-import java.nio.charset.Charset
 
 class DataDownloadWorker(client: HttpClient, saveToFolder: String) extends Actor with ActorLogging {
 

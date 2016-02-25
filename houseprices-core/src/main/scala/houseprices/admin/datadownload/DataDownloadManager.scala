@@ -1,4 +1,4 @@
-package houseprices.admin.api
+package houseprices.admin.datadownload
 
 import java.util.concurrent.Executor
 import scala.annotation.implicitNotFound

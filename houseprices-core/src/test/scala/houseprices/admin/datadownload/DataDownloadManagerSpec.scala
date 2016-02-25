@@ -1,23 +1,26 @@
-package houseprices.admin.api
+package houseprices.admin.datadownload
 
 import scala.concurrent.Await
+import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
-import org.scalatest.BeforeAndAfterAll
+
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers
 import org.scalatest.WordSpecLike
+
+import DataDownloadMessages.ActiveDownload
 import DataDownloadMessages.Download
 import DataDownloadMessages.DownloadFailure
+import DataDownloadMessages.DownloadResult
 import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.actor.actorRef2Scala
+import akka.http.scaladsl.model.HttpMethod
 import akka.pattern.ask
 import akka.testkit.ImplicitSender
 import akka.testkit.TestActorRef
 import akka.testkit.TestKit
 import akka.util.Timeout
-import akka.http.scaladsl.model.HttpMethod
-import scala.concurrent.Future
-import org.scalatest.BeforeAndAfterEach
 
 class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
     with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterEach {

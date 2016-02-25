@@ -1,17 +1,16 @@
-package houseprices.admin.api
+package houseprices.admin.datadownload
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import akka.stream.ActorMaterializer
+
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.HttpRequest
-import akka.http.scaladsl.model.HttpMethods
-import scala.concurrent.ExecutionContext
-import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.model.HttpMethod
-import scala.concurrent.ExecutionContext
-import akka.dispatch.ExecutionContexts
-import scala.concurrent.ExecutionContext
+import akka.http.scaladsl.model.HttpMethods
+import akka.http.scaladsl.model.HttpRequest
+import akka.http.scaladsl.model.Uri.apply
+import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.stream.ActorMaterializer
 
 trait HttpClient {
   this: HttpRequestService =>

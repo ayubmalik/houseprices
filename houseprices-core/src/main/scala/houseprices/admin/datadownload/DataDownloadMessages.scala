@@ -1,6 +1,4 @@
-package houseprices.admin.api
-
-import java.time.LocalDateTime
+package houseprices.admin.datadownload
 
 object DataDownloadMessages {
   case class Download(url: String, fileName: String)

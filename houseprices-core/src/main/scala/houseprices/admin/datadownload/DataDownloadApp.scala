@@ -1,13 +1,13 @@
-package houseprices.admin.api
+package houseprices.admin.datadownload
 
-import akka.actor.ActorSystem
-import scala.concurrent.duration.DurationInt
-import akka.actor.Props
-import akka.actor.Inbox
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.DurationInt
+
 import DataDownloadMessages.Download
-import java.util.concurrent.TimeoutException
-import akka.pattern._
+import akka.actor.ActorSystem
+import akka.actor.Inbox
+import akka.actor.Props
+import akka.pattern.gracefulStop
 
 object DataDownloadApp extends App {
 
@@ -18,7 +18,7 @@ object DataDownloadApp extends App {
 
   val system = ActorSystem("dataDownloader")
   val inbox = Inbox.create(system)
-  val downloader = system.actorOf(Props(classOf[DataDownloader], "/tmp/houseprices"))
+  val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices"))
 
   inbox.send(downloader, Download(file2, "pp-data-file.csv"))
   val msg = inbox.receive(2.minutes)

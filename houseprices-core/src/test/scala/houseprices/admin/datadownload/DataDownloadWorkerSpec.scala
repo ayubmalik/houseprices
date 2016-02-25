@@ -1,20 +1,24 @@
-package houseprices.admin.api
+package houseprices.admin.datadownload
 
+import java.nio.file.Files
+import java.nio.file.Paths
+
+import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
+import scala.util.Random
+
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.Matchers
 import org.scalatest.WordSpecLike
+
+import DataDownloadMessages.Download
+import DataDownloadMessages.DownloadResult
 import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.actor.actorRef2Scala
+import akka.http.scaladsl.model.HttpMethod
 import akka.testkit.ImplicitSender
 import akka.testkit.TestKit
-import scala.util.Random
-import java.nio.file.Paths
-import java.nio.file.Files
-import akka.actor.PoisonPill
-import scala.concurrent.Future
-import akka.http.scaladsl.model.HttpMethod
 
 class DataDownloadWorkerSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterAll {
 

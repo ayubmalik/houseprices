@@ -28,6 +28,7 @@ import houseprices.admin.datadownload.DataDownloadManager
 import houseprices.admin.datadownload.HttpClient
 import houseprices.admin.datadownload.AkkaHttpClient
 import houseprices.elasticsearch.config.EsClientBuilder
+import houseprices.elasticsearch.HousePriceIndex
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val format1 = jsonFormat3(ActiveDownload)
@@ -42,7 +43,7 @@ trait AdminService extends AdminJsonProtocols {
   implicit val timeout = Timeout(5 seconds)
 
   def client: HttpClient
-  val logger: LoggingAdapter
+  val log: LoggingAdapter
 
   val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", client))
 
@@ -76,21 +77,24 @@ class AdminServer(implicit val system: ActorSystem, implicit val materializer: A
 
   def startServer(interface: String, port: Int) = {
     Http().bindAndHandle(routes, interface, port)
-    logger.info("Admin server ready at {}:{}", interface, port)
+    log.info("Admin server ready at {}:{}", interface, port)
     this
   }
 
   def client = AkkaHttpClient(system)
-  val logger = Logging(system, getClass)
+  val log = Logging(system, getClass)
 }
 
 object AdminServer extends App {
   implicit val system = ActorSystem("housepricesAdminSystem")
   implicit val materializer = ActorMaterializer()
+  val log = Logging(system, getClass)
 
-  val logger = Logging(system, getClass)
-  logger.info("Starting embedded client for Elasticsearch")
-  val esClient = EsClientBuilder.buildClient("dev")
+  // TODO: This is for dev mode only.
+  log.info("Starting embedded client for Elasticsearch")
+  val client = EsClientBuilder.buildClient("dev")
+  log.info("Creating index if required")
+  HousePriceIndex(client).createIfNotExists
 
   val config = ConfigFactory.load()
   val (interface, port) = (config.getString("akka.http.interface"), config.getInt("akka.http.port"))

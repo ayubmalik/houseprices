@@ -26,7 +26,7 @@ class AdminServerSpec extends WordSpec
 
   import spray.json._
 
-  val logger = null
+  val log = null
 
   def client = new HttpClient with HttpRequestService {
     def makeRequest(method: HttpMethod, uri: String) = Promise[String].future

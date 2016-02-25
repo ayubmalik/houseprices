@@ -53,7 +53,7 @@ class DataDownloadWorkerSpec(_system: ActorSystem) extends TestKit(_system) with
         Files.isDirectory(Paths.get(saveToFolder)) should be(false)
 
         system.actorOf(Props(classOf[DataDownloadWorker], client, saveToFolder))
-        within(500.millis) {
+        within(1000.millis) {
           Files.isDirectory(Paths.get(saveToFolder)) should be(true)
           Files.deleteIfExists(Paths.get(saveToFolder))
         }

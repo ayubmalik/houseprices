@@ -66,8 +66,11 @@ trait AdminService extends AdminJsonProtocols {
           }
       } ~
         path("dataimports") {
-          get {
-            complete("TODO")
+          entity(as[String]) { csvFileToImport =>
+            if (csvFileToImport.isEmpty) complete(HttpResponse(status = 400))
+            else {
+              complete("TODO")
+            }
           }
         }
     }

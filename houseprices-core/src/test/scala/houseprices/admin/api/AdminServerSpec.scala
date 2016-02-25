@@ -64,14 +64,13 @@ class AdminServerSpec extends WordSpec
     }
 
     "when url is /admin/dataimports/" should {
-      "return active count for GET" in {
+      "accept POST for csv file to import" in {
 
-        val getRequest = HttpRequest(HttpMethods.GET, uri = "/admin/dataimports")
-        getRequest ~> routes ~> check {
+        val post = Post("/admin/dataimports", "csv file")
+        post ~> routes ~> check {
           status.isSuccess() shouldEqual true
         }
       }
-
     }
   }
 

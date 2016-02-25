@@ -6,8 +6,12 @@ import houseprices.postcodes.PostcodeRepo
 import houseprices.PricePaid
 import houseprices.Address
 import houseprices.postcodes.FileSource
+import org.slf4j.LoggerFactory
 
 class PricePaidCsvProcessor(val csvInputFile: String) {
+
+  val log = LoggerFactory.getLogger(getClass)
+
   lazy val postcodeRepo = PostcodeRepo
   lazy val csv = FileSource(csvInputFile, "iso-8859-1").getLines()
 
@@ -37,8 +41,8 @@ class PricePaidCsvProcessor(val csvInputFile: String) {
       pricePaidProcessor(PricePaid(id, price, date, Address(postcode.value, primary, secondary, street, locality, town, district, county, location)))
     } catch {
       case e: Exception => {
-        println(s"lineNumber = $lineNumber")
-        e.printStackTrace
+        log.info("lineNumber = {}", lineNumber)
+        log.error(e.getMessage)
       }
     }
   }

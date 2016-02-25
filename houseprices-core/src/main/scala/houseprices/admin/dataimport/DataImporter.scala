@@ -15,7 +15,6 @@ class DataImporter(dataFolder: String) extends Actor with ActorLogging {
 
   def receive = {
     case ImportData(fileName) => sender ! "TODO"
-
   }
 
 }

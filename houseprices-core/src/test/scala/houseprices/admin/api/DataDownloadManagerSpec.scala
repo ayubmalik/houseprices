@@ -27,7 +27,6 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
 
   val client = new HttpClient with HttpRequestService {
     def makeRequest(method: HttpMethod, uri: String) = Future {
-      Thread.sleep(25) // simulate delay
       "Hello There"
     }
   }
@@ -36,11 +35,12 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
 
     "running" should {
       "should limit downloads" in {
-        val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/1", client))
-        downloader ! Download("url1", "file1")
-        downloader ! Download("url2", "file2")
+        val downloader = TestActorRef(new DataDownloadManager("/tmp/houseprices", client))
+        downloader.underlyingActor.activeDownloads += ("url1" -> (ActiveDownload("url1", "file1", "now"), self))
+        downloader.underlyingActor.activeDownloads += ("url2" -> (ActiveDownload("url2", "file1", "now"), self))
         downloader ! Download("url3", "file3")
         expectMsg(DownloadFailure("Sorry max limit reached"))
+        system.stop(downloader)
       }
 
       "should show active workers" in {
@@ -48,11 +48,8 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
         import scala.concurrent.duration._
         implicit val timeout = Timeout(1 seconds)
 
-        val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", client))
-        downloader ! Download("url1", "file1")
-        ignoreMsg {
-          case DownloadResult(url, f) => url.startsWith("someurl")
-        }
+        val downloader = TestActorRef(new DataDownloadManager("/tmp/houseprices", client))
+        downloader.underlyingActor.activeDownloads += ("url1" -> (ActiveDownload("url1", "file", "now"), self))
         val active: ActiveDownloads = Await.result(ask(downloader, ShowActive), 50 millis).asInstanceOf[ActiveDownloads]
         active.count should be(1)
       }
@@ -60,10 +57,8 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
       "should send DownloadResult to sender" in {
         val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", client))
         downloader ! Download("someurl", "file1")
-        ignoreMsg {
-          case DownloadResult(url, f) => url.startsWith("url")
-        }
         expectMsg(DownloadResult("someurl", "/tmp/houseprices/file1"))
+        system.stop(downloader)
       }
     }
   }

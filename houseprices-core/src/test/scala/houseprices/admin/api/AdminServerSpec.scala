@@ -59,6 +59,17 @@ class AdminServerSpec extends WordSpec
         }
       }
     }
+
+    "when url is /admin/dataimports/" should {
+      "return active count for GET" in {
+
+        val getRequest = HttpRequest(HttpMethods.GET, uri = "/admin/dataimports")
+        getRequest ~> routes ~> check {
+          status.isSuccess() shouldEqual true
+        }
+      }
+
+    }
   }
 
 }

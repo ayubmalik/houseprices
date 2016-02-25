@@ -62,7 +62,12 @@ trait AdminService extends AdminJsonProtocols {
               }
             }
           }
-      }
+      } ~
+        path("dataimports") {
+          get {
+            complete("TODO")
+          }
+        }
     }
 }
 

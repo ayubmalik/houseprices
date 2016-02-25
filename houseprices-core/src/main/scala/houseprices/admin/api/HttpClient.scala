@@ -29,11 +29,12 @@ trait AkkaHttpRequestService extends HttpRequestService {
   implicit val ec: ExecutionContext
 
   lazy val http = Http(system)
+  val oneGigabyte = 1073741824
 
   override def makeRequest(method: HttpMethod, uri: String): Future[String] = {
     val req = HttpRequest(method, uri)
     val res = http.singleRequest(req)
-    res.flatMap { r => Unmarshal(r.entity).to[String] }
+    res.flatMap { r => Unmarshal(r.entity.withSizeLimit(oneGigabyte)).to[String] }
   }
 
   def shutdown() = http.shutdownAllConnectionPools

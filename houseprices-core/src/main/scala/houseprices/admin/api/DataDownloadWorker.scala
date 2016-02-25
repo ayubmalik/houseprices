@@ -28,7 +28,6 @@ class DataDownloadWorker(client: HttpClient, saveToFolder: String) extends Actor
   import DataDownloadMessages._
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
 
-  val oneGigabyte = 1073741824
   val http = Http(context.system)
   implicit val materializer = ActorMaterializer()
 

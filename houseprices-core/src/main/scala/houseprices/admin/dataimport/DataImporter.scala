@@ -10,7 +10,6 @@ import org.elasticsearch.client.Client
 import java.nio.file.Paths
 
 case class ImportData(fileName: String)
-case class ActiveImport(fullPath: String)
 
 class DataImporter(dataFolder: String, bulkAddFactory: String => BulkAddPricePaid) extends Actor with ActorLogging {
   implicit val executor = context.dispatcher.asInstanceOf[Executor with ExecutionContext]
@@ -20,6 +19,7 @@ class DataImporter(dataFolder: String, bulkAddFactory: String => BulkAddPricePai
       log.info("import request for file: {}", csvFile)
       val bulkAdd = bulkAddFactory(makeFullPath(csvFile))
       bulkAdd.run
+    case _@ msg => log.warning("Unsupported message, {}")
   }
 
   def makeFullPath(fileName: String) = Paths.get(dataFolder, fileName).toAbsolutePath().toString()

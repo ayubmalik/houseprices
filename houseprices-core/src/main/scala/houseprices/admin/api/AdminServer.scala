@@ -52,8 +52,8 @@ trait AdminService extends AdminJsonProtocols {
   val log: LoggingAdapter
 
   val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", httpClient))
-  val factory = (csv: String) => BulkAddPricePaid(esClient, csv)
-  val importer = system.actorOf(Props(classOf[DataImporter], "/tmp/houseprices", factory))
+  val bulkAddFactory = (csvDataFile: String) => BulkAddPricePaid(esClient, csvDataFile)
+  val importer = system.actorOf(Props(classOf[DataImporter], "/tmp/houseprices", bulkAddFactory))
 
   val routes =
     pathPrefix("admin") {

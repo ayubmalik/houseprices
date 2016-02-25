@@ -31,11 +31,12 @@ class DataImporterSpec extends TestKit(ActorSystem("dataimporter"))
 
       "import data from csv file" in {
         var fullPathToDownload = ""
-        val bulkUpdateFactory = (csvFile: String) => new BulkAddPricePaid(null, csvFile) {
+        val bulkAddFactory = (csvFile: String) => new BulkAddPricePaid(null, csvFile) {
           override def run = { fullPathToDownload = csvFile }
         }
 
-        val importer = TestActorRef(new DataImporter("/tmp/houseprices", bulkUpdateFactory))
+        val importer = TestActorRef(new DataImporter("/tmp/houseprices", bulkAddFactory))
+
         importer ! ImportData("somefile")
         fullPathToDownload shouldBe "/tmp/houseprices/somefile"
         system.stop(importer)

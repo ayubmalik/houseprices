@@ -6,4 +6,4 @@ The web application allows you to search for house prices since 1998.
 Uses scala, akka, elasticsearch, akka-http microservice
 
 # Overview
-There are two parts to the app. An Elasticsearch base API for searching and a _separate_ web application that consumes the API.A
+There are two parts to the app. An Elasticsearch base API for searching and a _separate_ web application that consumes the API

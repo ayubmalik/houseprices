@@ -27,6 +27,7 @@ import houseprices.admin.datadownload.DataDownloadMessages._
 import houseprices.admin.datadownload.DataDownloadManager
 import houseprices.admin.datadownload.HttpClient
 import houseprices.admin.datadownload.AkkaHttpClient
+import houseprices.elasticsearch.config.EsClientBuilder
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val format1 = jsonFormat3(ActiveDownload)
@@ -86,8 +87,12 @@ class AdminServer(implicit val system: ActorSystem, implicit val materializer: A
 object AdminServer extends App {
   implicit val system = ActorSystem("housepricesAdminSystem")
   implicit val materializer = ActorMaterializer()
-  val config = ConfigFactory.load()
 
+  val logger = Logging(system, getClass)
+  logger.info("Starting embedded client for Elasticsearch")
+  val esClient = EsClientBuilder.buildClient("dev")
+
+  val config = ConfigFactory.load()
   val (interface, port) = (config.getString("akka.http.interface"), config.getInt("akka.http.port"))
   val server = new AdminServer().startServer(interface, port)
 }

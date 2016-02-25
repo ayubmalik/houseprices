@@ -54,7 +54,6 @@ class DataDownloadManagerSpec extends TestKit(ActorSystem("test"))
           case DownloadResult(url, f) => url.startsWith("someurl")
         }
         val active: ActiveDownloads = Await.result(ask(downloader, ShowActive), 50 millis).asInstanceOf[ActiveDownloads]
-        println(active)
         active.count should be(1)
       }
 

@@ -1,10 +1,8 @@
 package houseprices.admin.api
 
 import scala.concurrent.Promise
-
 import org.scalatest.Matchers
 import org.scalatest.WordSpec
-
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.ContentType.apply
 import akka.http.scaladsl.model.ContentTypeRange.apply
@@ -20,6 +18,8 @@ import houseprices.admin.datadownload.DataDownloadMessages.ActiveDownloads
 import houseprices.admin.datadownload.HttpClient
 import houseprices.admin.datadownload.HttpRequestService
 import spray.json.pimpAny
+import org.mockito.Mockito
+import org.elasticsearch.client.Client
 
 class AdminServerSpec extends WordSpec
     with Matchers with ScalatestRouteTest with AdminService with AdminJsonProtocols {
@@ -28,9 +28,11 @@ class AdminServerSpec extends WordSpec
 
   val log = null
 
-  def client = new HttpClient with HttpRequestService {
+  def httpClient = new HttpClient with HttpRequestService {
     def makeRequest(method: HttpMethod, uri: String) = Promise[String].future
   }
+
+  def esClient = Mockito.mock(classOf[Client])
 
   "Admin Server" when {
 
@@ -68,7 +70,7 @@ class AdminServerSpec extends WordSpec
 
         val post = Post("/admin/dataimports", "csv file")
         post ~> routes ~> check {
-         status.intValue shouldEqual 202
+          status.intValue shouldEqual 202
         }
       }
     }

@@ -15,6 +15,10 @@ import akka.testkit.ImplicitSender
 import akka.testkit.TestActorRef
 import akka.testkit.TestKit
 import akka.util.Timeout
+import org.elasticsearch.client.Client
+import org.mockito.Mockito._
+import org.mockito.Matchers.anyObject
+import houseprices.elasticsearch.BulkAddPricePaid
 
 class DataImporterSpec extends TestKit(ActorSystem("dataimporter"))
     with ImplicitSender with WordSpecLike with Matchers with BeforeAndAfterEach {
@@ -26,12 +30,17 @@ class DataImporterSpec extends TestKit(ActorSystem("dataimporter"))
     "running" should {
 
       "import data from csv file" in {
-        val importer = TestActorRef(new DataImporter("/tmp/houseprices"))
-        importer ! ImportData("some file")
-        expectMsg("TODO")
-        system.stop(importer)
-      }
+        var fullPathToDownload = ""
+        val bulkUpdateFactory = (csvFile: String) => new BulkAddPricePaid(null, csvFile) {
+          override def run = { fullPathToDownload = csvFile }
+        }
 
+        val importer = TestActorRef(new DataImporter("/tmp/houseprices", bulkUpdateFactory))
+        importer ! ImportData("somefile")
+        fullPathToDownload shouldBe "/tmp/houseprices/somefile"
+        system.stop(importer)
+
+      }
     }
   }
 }

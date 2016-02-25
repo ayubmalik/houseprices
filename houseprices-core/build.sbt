@@ -20,7 +20,8 @@ libraryDependencies ++= {
     "com.typesafe.akka"         %% "akka-http-spray-json-experimental" % akkaHttpVersion,
     "org.scalatest"             %% "scalatest"                         % scalaTestVersion % "test",
     "com.typesafe.akka"         %% "akka-testkit"                      % akkaVersion % "test",
-    "com.typesafe.akka"         %% "akka-http-testkit-experimental"    % "2.4.2-RC3" % "test"
+    "com.typesafe.akka"         %% "akka-http-testkit-experimental"    % "2.4.2-RC3" % "test",
+    "org.mockito"                %  "mockito-core"                     % "2.0.43-beta"
   )
 }
 

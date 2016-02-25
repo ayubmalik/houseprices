@@ -31,6 +31,8 @@ import houseprices.elasticsearch.config.EsClientBuilder
 import houseprices.elasticsearch.HousePriceIndex
 import houseprices.admin.dataimport.DataImporter
 import houseprices.admin.dataimport.ImportData
+import org.elasticsearch.client.Client
+import houseprices.elasticsearch.BulkAddPricePaid
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val format1 = jsonFormat3(ActiveDownload)
@@ -44,11 +46,14 @@ trait AdminService extends AdminJsonProtocols {
   implicit val system: ActorSystem
   implicit val timeout = Timeout(5 seconds)
 
-  def client: HttpClient
+  def httpClient: HttpClient
+  def esClient: Client
+
   val log: LoggingAdapter
 
-  val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", client))
-  val importer = system.actorOf(Props(classOf[DataImporter], "/tmp/houseprices"))
+  val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", httpClient))
+  val factory = (csv: String) => BulkAddPricePaid(esClient, csv)
+  val importer = system.actorOf(Props(classOf[DataImporter], "/tmp/houseprices", factory))
 
   val routes =
     pathPrefix("admin") {
@@ -80,7 +85,7 @@ trait AdminService extends AdminJsonProtocols {
     }
 }
 
-class AdminServer(implicit val system: ActorSystem, implicit val materializer: ActorMaterializer) extends AdminService {
+class AdminServer(val _esClient: Client)(implicit val system: ActorSystem, implicit val materializer: ActorMaterializer) extends AdminService {
 
   def startServer(interface: String, port: Int) = {
     Http().bindAndHandle(routes, interface, port)
@@ -88,7 +93,8 @@ class AdminServer(implicit val system: ActorSystem, implicit val materializer: A
     this
   }
 
-  def client = AkkaHttpClient(system)
+  def httpClient = AkkaHttpClient(system)
+  def esClient = _esClient
   val log = Logging(system, getClass)
 }
 
@@ -99,11 +105,11 @@ object AdminServer extends App {
 
   // TODO: This is for dev mode only.
   log.info("Starting embedded client for Elasticsearch")
-  val client = EsClientBuilder.buildClient("dev")
+  val esClient = EsClientBuilder.buildClient("dev")
   log.info("Creating index if required")
-  HousePriceIndex(client).createIfNotExists
+  HousePriceIndex(esClient).createIfNotExists
 
   val config = ConfigFactory.load()
   val (interface, port) = (config.getString("akka.http.interface"), config.getInt("akka.http.port"))
-  val server = new AdminServer().startServer(interface, port)
+  val server = new AdminServer(esClient).startServer(interface, port)
 }

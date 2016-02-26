@@ -1,7 +1,6 @@
 package houseprices
 
-import scala.io.Source
-import houseprices.elasticsearch.BulkAddPricePaid
+import houseprices.elasticsearch.BulkImportPricePaidData
 import houseprices.elasticsearch.CreateIndex
 import houseprices.elasticsearch.config.EsClientBuilder
 import houseprices.postcodes.ClasspathSource
@@ -18,7 +17,7 @@ object CreatePricePaidIndexApp {
     new CreateIndex(client, "pricepaid", "uk", Some(mappingJsonSource)).recreate
 
     val csvFile = if (args.length > 0) args(0) else "tools/1000-sample-houseprices.csv"
-    BulkAddPricePaid(client, csvFile).run
+    BulkImportPricePaidData(client, csvFile).run
 
     println("ES up: http://localhost:9200/pricepaid/uk/_count")
   }

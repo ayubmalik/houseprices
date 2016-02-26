@@ -8,7 +8,7 @@ import houseprices.PricePaidToJson
 import houseprices.csv.PricePaidCsvProcessor
 import org.slf4j.LoggerFactory
 
-class BulkAddPricePaid(val client: Client, val csvFile: String) {
+class BulkImportPricePaidData(val client: Client, val csvFile: String) {
 
   val log = LoggerFactory.getLogger(getClass)
 
@@ -29,6 +29,6 @@ class BulkAddPricePaid(val client: Client, val csvFile: String) {
   }
 }
 
-object BulkAddPricePaid {
-  def apply(client: Client, csvFile: String) = new BulkAddPricePaid(client, csvFile)
+object BulkImportPricePaidData {
+  def apply(client: Client, csvFile: String) = new BulkImportPricePaidData(client, csvFile)
 }

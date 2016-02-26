@@ -32,7 +32,7 @@ import houseprices.elasticsearch.HousePriceIndex
 import houseprices.admin.dataimport.DataImporter
 import houseprices.admin.dataimport.ImportData
 import org.elasticsearch.client.Client
-import houseprices.elasticsearch.BulkAddPricePaid
+import houseprices.elasticsearch.BulkImportPricePaidData
 
 trait AdminJsonProtocols extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val format1 = jsonFormat3(ActiveDownload)
@@ -52,8 +52,8 @@ trait AdminService extends AdminJsonProtocols {
   val log: LoggingAdapter
 
   val downloader = system.actorOf(Props(classOf[DataDownloadManager], "/tmp/houseprices", httpClient))
-  val bulkAddFactory = (csvDataFile: String) => BulkAddPricePaid(esClient, csvDataFile)
-  val importer = system.actorOf(Props(classOf[DataImporter], "/tmp/houseprices", bulkAddFactory))
+  val bulkImportFactory = (csvDataFile: String) => BulkImportPricePaidData(esClient, csvDataFile)
+  val importer = system.actorOf(Props(classOf[DataImporter], "/tmp/houseprices", bulkImportFactory))
 
   val routes =
     pathPrefix("admin") {

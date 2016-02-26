@@ -1,7 +1,7 @@
 package houseprices
 
-import houseprices.elasticsearch.BulkAddPricePaid
 import houseprices.elasticsearch.config.EsClientBuilder
+import houseprices.elasticsearch.BulkImportPricePaidData
 
 object ImportCsvDataFromFileApp {
 
@@ -10,7 +10,7 @@ object ImportCsvDataFromFileApp {
     val csvFile = args(0)
     println(s"Import data from $csvFile into ES")
     val client = EsClientBuilder.transportClient
-    BulkAddPricePaid(client, csvFile).run
+    BulkImportPricePaidData(client, csvFile).run
 
     println("Finished import.")
     client.close()

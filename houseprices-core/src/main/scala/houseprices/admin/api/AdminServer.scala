@@ -111,5 +111,5 @@ object AdminServer extends App {
 
   val config = ConfigFactory.load()
   val (interface, port) = (config.getString("akka.http.interface"), config.getInt("akka.http.port"))
-  val server = new AdminServer(esClient).startServer(interface, port)
+  new AdminServer(esClient).startServer(interface, port)
 }

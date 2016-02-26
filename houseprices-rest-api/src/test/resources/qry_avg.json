@@ -11,8 +11,8 @@
 				"geo_distance" : {
 					"distance" : "2km",
 					"address.location" : {
-						"lat" : 53.4389862838117,
-						"lon" : -2.26168179339287
+						"lat" : 53.4152,
+						"lon" : -2.2355
 					}
 				}
 			}

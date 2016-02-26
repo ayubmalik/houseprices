@@ -1,6 +1,6 @@
-{ 
-  "id" : "26DE1558-9512-486C-A8B0-00000BE8A3B4",
-  "price": 125000,
-  "dateOfTransfer": "2014-12-14 00:00",
-  "postcode": "M13 0WP"
+{
+	"id" : "26DE1558-9512-486C-A8B0-00000BE8A3B4",
+	"price" : 125000,
+	"dateOfTransfer" : "2014-12-14 00:00",
+	"postcode" : "M13 0WP"
 }

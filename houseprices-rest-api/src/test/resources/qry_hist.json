@@ -1,27 +1,29 @@
 {
-  "size": 100,
-  "query": {
-    "filtered" : {
-      "query" : {
-        "match_all" : {}
-      },
-      "filter" : {
-        "geo_distance" : {
-          "distance" : "10km",
-          "address.location" : {
-            "lat" : 53.4389862838117,
-            "lon" : -2.26168179339287
-          }
-        }
-      }
-    }
-  },
-  "aggregations": {
-    "hist_price" : {
-     "date_histogram" : { 
-       "field" : "date",
-       "interval" : "month" 
-     }
-    }
-  }
+	"size" : 100,
+	"query" : {
+		"filtered" : {
+			"query" : {
+				"match_all" : {
+					
+				}
+			},
+			"filter" : {
+				"geo_distance" : {
+					"distance" : "10km",
+					"address.location" : {
+						"lat" : 53.4389862838117,
+						"lon" : -2.26168179339287
+					}
+				}
+			}
+		}
+	},
+	"aggregations" : {
+		"hist_price" : {
+			"date_histogram" : {
+				"field" : "date",
+				"interval" : "month"
+			}
+		}
+	}
 }

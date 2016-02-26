@@ -12,10 +12,10 @@
 		"address.county",
 		"address.postcode"
 	],
-	"size" : 5,
+	"size" : 50,
 	"query" : {
-		"match" : {
-			"address.postcode" : "M20 6TA"
+		"prefix" : {
+			"address.postcode" : "M20"
 		}
 	}
 }

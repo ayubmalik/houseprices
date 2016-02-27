@@ -24,3 +24,9 @@ class PostcodeOutwardCodeMatcher(val outwardCode: String) {
 object PostcodeOutwardCodeMatcher {
   def apply(outwardCode: String) = new PostcodeOutwardCodeMatcher(outwardCode)
 }
+
+
+object LooksLikeAPostcode {
+  def matches(postcode: String) = PostcodeFullMatcher(postcode).matches ||
+    PostcodeOutwardCodeMatcher(postcode).matches
+}

@@ -1,6 +1,5 @@
 name := """houseprices-core"""
 
-
 libraryDependencies ++= {
 
   val elasticSearchVersion = "2.2.0"

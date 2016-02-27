@@ -60,4 +60,13 @@ class PostcodeMatchersSpec extends WordSpec with Matchers with TableDrivenProper
       }
     }
   }
+
+  "LooksLikeAPostcode" should {
+    "match full postcode or outward code" in {
+      val postcodesAndOutwardCodes = postcodes ++ outwardCodes
+      forAll(postcodesAndOutwardCodes) { code =>
+        LooksLikeAPostcode(code) shouldBe true
+      }
+    }
+  }
 }

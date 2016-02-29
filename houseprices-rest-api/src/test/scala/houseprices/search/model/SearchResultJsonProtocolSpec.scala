@@ -5,6 +5,7 @@ import org.scalatest.Matchers
 import scala.io.Source
 import spray.json.JsValue
 import spray.json.JsonParser
+import java.time.LocalDate.parse
 
 class SearchResultJsonProtocolSpec extends WordSpec with Matchers {
 
@@ -22,6 +23,8 @@ class SearchResultJsonProtocolSpec extends WordSpec with Matchers {
 
     "create price data as list" in {
       searchResult.priceData.size should be(3)
+      val pricepaid = searchResult.priceData(0)
+      pricepaid should be(PricePaidData(274950, parse("2009-07-10")))
     }
   }
 

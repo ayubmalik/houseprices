@@ -1,11 +1,15 @@
 package houseprices.search.model
 
-import org.scalatest.WordSpec
-import org.scalatest.Matchers
-import scala.io.Source
-import spray.json.JsValue
-import spray.json.JsonParser
 import java.time.LocalDate.parse
+
+import scala.io.Source
+
+import org.scalatest.Finders
+import org.scalatest.Matchers
+import org.scalatest.WordSpec
+
+import spray.json.JsonParser
+import spray.json.ParserInput.apply
 
 class SearchResultJsonProtocolSpec extends WordSpec with Matchers {
 

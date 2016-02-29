@@ -98,7 +98,7 @@ class AdminServer(val _esClient: Client)(implicit val system: ActorSystem, impli
   val log = Logging(system, getClass)
 }
 
-object AdminServer extends App {
+object DevAdminServer extends App {
   implicit val system = ActorSystem("housepricesAdminSystem")
   implicit val materializer = ActorMaterializer()
   val log = Logging(system, getClass)

@@ -7,6 +7,7 @@ import akka.http.scaladsl.model.{HttpMethods,HttpRequest, HttpResponse}
 import org.slf4j.LoggerFactory
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import houseprices.search.model.SearchResult
 
 case class Query(query: String)
 

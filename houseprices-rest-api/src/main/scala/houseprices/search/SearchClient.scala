@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import houseprices.search.model.SearchResult
+import houseprices.search.model.PricePaidData
 
 case class Query(query: String)
 
@@ -33,7 +34,7 @@ class HttpSearchClient(implicit val system: ActorSystem) extends SearchClient {
     val response = Await.result(request(HttpRequest(HttpMethods.GET,
       uri = "http://localhost:9200/pricepaid/uk/_search?q=")), 3.seconds)
     log.info("response:" + response)
-    SearchResult(0) // TODO: unmarshalling etc
+    SearchResult(0, List.empty) // TODO: unmarshalling etc
   }
 }
 

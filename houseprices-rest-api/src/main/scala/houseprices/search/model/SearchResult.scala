@@ -1,5 +1,5 @@
 package houseprices.search.model
 
-case class SearchResult(count: Int)
+case class SearchResult(count: Int, priceData: List[PricePaidData])
 
-case class PricePaid(price: Int)
+case class PricePaidData(price: Int, date:String)

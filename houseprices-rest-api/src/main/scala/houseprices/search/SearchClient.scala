@@ -3,14 +3,13 @@ package houseprices.search
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{HttpMethods,HttpRequest, HttpResponse}
+import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, HttpResponse }
 import org.slf4j.LoggerFactory
-import scala.concurrent.{Await, Future}
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import houseprices.search.model.SearchResult
 import houseprices.search.model.PricePaidData
-
-case class Query(query: String)
+import houseprices.search.model.Query
 
 trait SearchClient {
   def search(query: Query): SearchResult

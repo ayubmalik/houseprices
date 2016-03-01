@@ -1,10 +1,17 @@
 package houseprices.search
 
-import org.scalatest.WordSpec
-import org.scalatest.Matchers
-import akka.actor.ActorSystem
-import akka.http.scaladsl.model.{HttpEntity, HttpRequest, HttpResponse, MediaTypes}
 import scala.concurrent.Future
+
+import org.scalatest.Matchers
+import org.scalatest.WordSpec
+
+import akka.actor.ActorSystem
+import akka.http.scaladsl.model.ContentType.apply
+import akka.http.scaladsl.model.HttpEntity
+import akka.http.scaladsl.model.HttpRequest
+import akka.http.scaladsl.model.HttpResponse
+import akka.http.scaladsl.model.MediaTypes
+import houseprices.search.model.Query
 
 class SearchClientSpec extends WordSpec with Matchers {
 

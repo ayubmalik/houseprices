@@ -11,7 +11,7 @@ class QueryToElasticSearchOpsSpec extends WordSpec with Matchers {
 
     "convert query to elastic search json" in {
       val qry = Query("hello mommy")
-      qry.toElasticsearch should be("""{hello}""")
+      qry.toElasticsearch should be("""{"query": {"query_string": {"query": "hello mommy"}}}""")
     }
   }
 }

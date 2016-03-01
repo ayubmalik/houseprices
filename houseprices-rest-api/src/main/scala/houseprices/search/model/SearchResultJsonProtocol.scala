@@ -31,8 +31,6 @@ object SearchResultJsonProtocol extends DefaultJsonProtocol {
           "street", "locality", "townCity", "county", "postcode") map { f =>
             f.asInstanceOf[JsString].value
           }
-
-        println(formattedAddress.mkString(" "))
         PricePaidData(
           data(0).asInstanceOf[JsNumber].value.intValue(),
           parseDate(data(1).asInstanceOf[JsString].value), formattedAddress.mkString(", "))

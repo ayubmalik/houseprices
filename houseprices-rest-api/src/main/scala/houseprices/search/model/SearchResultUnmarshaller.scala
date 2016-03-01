@@ -11,14 +11,16 @@ import java.time.format.DateTimeFormatter
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import akka.http.scaladsl.model.HttpEntity
 import akka.actor.ActorSystem
+import akka.http.scaladsl.unmarshalling.Unmarshal
 
 object SearchResultUnmarshaller {
 
   import SearchResultJsonProtocol._
   implicit val mat = akka.stream.ActorMaterializer
+
   implicit val um: Unmarshaller[HttpEntity, SearchResult] = {
-    Unmarshaller.byteStringUnmarshaller.mapWithCharset { (data, charset) =>
-      JsonParser(data.toString).convertTo[SearchResult]
+    Unmarshaller.stringUnmarshaller.map { payload =>
+      JsonParser(payload).convertTo[SearchResult]
     }
   }
 

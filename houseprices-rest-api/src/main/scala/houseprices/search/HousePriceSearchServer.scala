@@ -12,16 +12,18 @@ import akka.http.scaladsl.server.Directives.segmentStringToPathMatcher
 import akka.http.scaladsl.server.RouteResult.route2HandlerFlow
 import akka.stream.ActorMaterializer
 import houseprices.search.model.Query
+import akka.http.scaladsl.marshalling.ToResponseMarshallable
 
 trait HousePriceSearchService {
 
   def searchClient: SearchClient
 
   val routes =
-    path("search"/ ".*".r) { text =>
+    path("search" / ".*".r) { text =>
       get {
-        val result = searchClient.search(Query(text))
-        complete("todo: " + Query(text))
+        complete {
+           ToResponseMarshallable("hello")
+        }
       }
     }
 }

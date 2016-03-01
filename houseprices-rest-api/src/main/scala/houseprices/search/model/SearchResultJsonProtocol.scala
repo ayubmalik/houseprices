@@ -8,6 +8,8 @@ import spray.json._
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import akka.http.scaladsl.unmarshalling.Unmarshaller
+import akka.http.scaladsl.model.HttpEntity
 
 object SearchResultJsonProtocol extends DefaultJsonProtocol {
 

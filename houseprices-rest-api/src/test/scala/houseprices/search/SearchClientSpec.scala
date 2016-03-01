@@ -15,7 +15,7 @@ import houseprices.search.model.Query
 
 class SearchClientSpec extends WordSpec with Matchers {
 
-  val system = ActorSystem("test")
+  implicit val system = ActorSystem("test")
   implicit val ec = system.dispatcher
 
   trait StubHttpRequestFactory extends HttpRequestFactory {
@@ -31,13 +31,13 @@ class SearchClientSpec extends WordSpec with Matchers {
     "searching" should {
 
       "return search result" in {
-        val searchClient = new HttpSearchClient(system) with StubHttpRequestFactory
+        val searchClient = new HttpSearchClient with StubHttpRequestFactory
         val result = searchClient.search(Query("hello"))
         result.count should be(0)
       }
 
       "return count of two" ignore {
-        val searchClient = new HttpSearchClient(system) with StubHttpRequestFactory
+        val searchClient = new HttpSearchClient with StubHttpRequestFactory
         val result = searchClient.search(Query("world"))
         result.count should be(2)
       }

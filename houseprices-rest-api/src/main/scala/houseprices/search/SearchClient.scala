@@ -26,7 +26,7 @@ trait AkkaHttpRequestFactory extends HttpRequestFactory {
   def request(req: HttpRequest) = http.singleRequest(req)
 }
 
-class HttpSearchClient(implicit val system: ActorSystem) extends SearchClient {
+class HttpSearchClient(val system: ActorSystem) extends SearchClient {
   this: HttpRequestFactory =>
   val log = LoggerFactory.getLogger(getClass)
   def search(query: Query) = {
@@ -38,5 +38,5 @@ class HttpSearchClient(implicit val system: ActorSystem) extends SearchClient {
 }
 
 object HttpSearchClient {
-  def apply(implicit system: ActorSystem) = new HttpSearchClient with AkkaHttpRequestFactory
+  def apply(system: ActorSystem) = new HttpSearchClient(system) with AkkaHttpRequestFactory
 }

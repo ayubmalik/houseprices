@@ -4,4 +4,4 @@ import java.time.LocalDate
 
 case class SearchResult(count: Int, priceData: List[PricePaidData])
 
-case class PricePaidData(price: Int, dateSold: LocalDate)
+case class PricePaidData(price: Int, dateSold: LocalDate, address: String)

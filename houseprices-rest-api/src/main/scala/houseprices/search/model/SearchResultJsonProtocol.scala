@@ -14,19 +14,26 @@ object SearchResultJsonProtocol extends DefaultJsonProtocol {
   private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
   implicit object SearchResultJsonFormat extends RootJsonFormat[SearchResult] {
-    def write(s: SearchResult) =
-      JsArray(JsNumber(s.count))
+
+    def write(s: SearchResult) = throw new RuntimeException("TODO")
 
     def read(value: JsValue) = {
-      val outerHits = value.asJsObject.fields("hits").asJsObject
-      val count = outerHits.fields("total").asInstanceOf[JsNumber]
-      val prices = outerHits.fields("hits").asInstanceOf[JsArray]
+      val hits = value.asJsObject.fields("hits").asJsObject
+      val count = hits.fields("total").asInstanceOf[JsNumber]
+      val prices = hits.fields("hits").asInstanceOf[JsArray]
       val data = prices.elements map { h =>
         val source = h.asJsObject.fields("_source").asJsObject
         val data = source.getFields("price", "date")
+        val address = source.fields("address").asJsObject
+        val formattedAddress = address.getFields("primaryName",
+          "street", "locality", "townCity", "county", "postcode") map { f =>
+            f.asInstanceOf[JsString].value
+          }
+
+        println(formattedAddress.mkString(" "))
         PricePaidData(
           data(0).asInstanceOf[JsNumber].value.intValue(),
-          parseDate(data(1).asInstanceOf[JsString].value))
+          parseDate(data(1).asInstanceOf[JsString].value), formattedAddress.mkString(", "))
       }
       SearchResult(count.value.intValue, data.toList)
     }

@@ -36,12 +36,13 @@ class HttpSearchClient(implicit val system: ActorSystem) extends SearchClient {
 
   private val searchUrl = "http://localhost:9200/pricepaid/uk/_search"
   private val log = LoggerFactory.getLogger(getClass)
+
   def search(query: Query) = {
     val searchJson = query.toElasticsearch
     log.debug("json: {}", searchJson)
-    val response = Await.result(request(HttpRequest(HttpMethods.GET, uri = searchUrl, entity = searchJson)), 3.seconds)
-    log.debug("entity: {}", response)
-    Unmarshal(response.entity).to[SearchResult]
+    request(HttpRequest(HttpMethods.GET, uri = searchUrl, entity = searchJson)).flatMap { r =>
+      Unmarshal(r.entity).to[SearchResult]
+    }
   }
 }
 

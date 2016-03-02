@@ -20,7 +20,7 @@ class SearchClientSpec extends WordSpec with Matchers {
 
   trait StubHttpRequestFactory extends HttpRequestFactory {
     import MediaTypes.`application/json`
-    val data = """{ "hits": 0 }"""
+    val data = """{"hits":{"total":0,"max_score":null,"hits":[]}}"""
     def request(req: HttpRequest) = Future[HttpResponse] {
       HttpResponse(entity = HttpEntity(`application/json`, data))
     }

@@ -33,15 +33,15 @@ class SearchClientSpec extends WordSpec with Matchers {
       "return search result" in {
         val searchClient = new HttpSearchClient with StubHttpRequestFactory
         val result = searchClient.search(Query("hello"))
-        result.count should be(0)
+        result map { _.count should be(0) }
+
       }
 
       "return count of two" ignore {
         val searchClient = new HttpSearchClient with StubHttpRequestFactory
         val result = searchClient.search(Query("world"))
-        result.count should be(2)
+        result map { _.count should be(2) }
       }
-
     }
   }
 }

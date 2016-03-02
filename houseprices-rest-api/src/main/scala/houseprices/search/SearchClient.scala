@@ -13,7 +13,7 @@ import houseprices.search.model._
 import houseprices.search.model.SearchResultUnmarshaller._
 
 trait SearchClient {
-  def search(query: Query): SearchResult
+  def search(query: Query): Future[SearchResult]
 }
 
 trait HttpRequestFactory {
@@ -41,7 +41,7 @@ class HttpSearchClient(implicit val system: ActorSystem) extends SearchClient {
     log.debug("json: {}", searchJson)
     val response = Await.result(request(HttpRequest(HttpMethods.GET, uri = searchUrl, entity = searchJson)), 3.seconds)
     log.debug("entity: {}", response)
-    Await.result(Unmarshal(response.entity).to[SearchResult], 1.seconds)
+    Unmarshal(response.entity).to[SearchResult]
   }
 }
 

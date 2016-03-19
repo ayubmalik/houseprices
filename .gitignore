@@ -5,7 +5,6 @@
 .classpath
 .project
 .settings
-.DS_Store
 .history
 .lib/
 dist/*
@@ -14,8 +13,5 @@ dist/*
 *.class
 *.log
 .history
-.lib/
 target/
-lib_managed/
-src_managed/
 project/boot/

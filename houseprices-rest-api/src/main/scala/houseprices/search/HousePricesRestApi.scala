@@ -1,4 +1,4 @@
-package houseprices.restapi
+package houseprices.search
 
 import java.io.IOException
 

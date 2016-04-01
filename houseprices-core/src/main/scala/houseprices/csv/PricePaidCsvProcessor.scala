@@ -15,7 +15,7 @@ class PricePaidCsvProcessor(val csvInputFile: String) {
   lazy val postcodeRepo = PostcodeRepo
   lazy val csv = FileSource(csvInputFile, "iso-8859-1").getLines()
 
-  var lineNumber = 0
+  var currentLineNumber = 0
 
   def foreach(rowProcessor: PricePaid => Unit): Unit = {
     for (row <- csv)
@@ -24,7 +24,7 @@ class PricePaidCsvProcessor(val csvInputFile: String) {
 
   private def processRow(rowString: String, pricePaidProcessor: PricePaid => Unit) = {
     try {
-      lineNumber = lineNumber + 1
+      currentLineNumber = currentLineNumber + 1
       val cols = rowString.split(",").map(_.replaceAll("\"", ""))
       val id = cols(0)
       val price = cols(1).toInt
@@ -41,7 +41,7 @@ class PricePaidCsvProcessor(val csvInputFile: String) {
       pricePaidProcessor(PricePaid(id, price, date, Address(postcode.value, primary, secondary, street, locality, town, district, county, location)))
     } catch {
       case e: Exception => {
-        log.info("lineNumber = {}", lineNumber)
+        log.info("lineNumber = {}", currentLineNumber)
         log.error(e.getMessage)
       }
     }

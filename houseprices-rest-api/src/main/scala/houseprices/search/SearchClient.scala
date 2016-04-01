@@ -1,16 +1,20 @@
 package houseprices.search
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, HttpResponse }
-import akka.http.scaladsl.unmarshalling.Unmarshal
-import org.slf4j.LoggerFactory
-import scala.concurrent.{ Await, Future }
-import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import org.slf4j.LoggerFactory
+import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.HttpEntity.apply
+import akka.http.scaladsl.model.HttpMethods
+import akka.http.scaladsl.model.HttpRequest
+import akka.http.scaladsl.model.HttpResponse
+import akka.http.scaladsl.model.Uri.apply
+import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.stream.ActorMaterializer
 import houseprices.search.model._
-import houseprices.search.model.SearchResultUnmarshaller._
+import houseprices.search.model.SearchResult
+
 
 trait SearchClient {
   def search(query: Query): Future[SearchResult]

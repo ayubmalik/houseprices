@@ -17,7 +17,13 @@ object SearchResultJsonProtocol extends DefaultJsonProtocol {
 
   implicit object SearchResultJsonFormat extends RootJsonFormat[SearchResult] {
 
-    def write(s: SearchResult) = throw new RuntimeException("TODO")
+    def write(s: SearchResult) = {
+      JsObject(
+        "count" -> JsNumber(s.count),
+        "priceData" -> JsArray(s.priceData.map { pp =>
+          JsObject("price" -> JsNumber(pp.price), "dateSold" -> JsString(pp.dateSold), "address" -> JsString(pp.address))
+        }.toVector))
+    }
 
     def read(value: JsValue) = {
       val hits = value.asJsObject.fields("hits").asJsObject
@@ -39,7 +45,7 @@ object SearchResultJsonProtocol extends DefaultJsonProtocol {
     }
 
     private def parseDate(date: String) = {
-      LocalDate.parse(date, dateFormat)
+      LocalDate.parse(date, dateFormat).toString
     }
   }
 }

@@ -29,7 +29,7 @@ class SearchResultJsonProtocolSpec extends WordSpec with Matchers {
       searchResult.priceData.size should be(3)
 
       val pricepaid = searchResult.priceData(0)
-      pricepaid should be(PricePaidData(274950, parse("2009-07-10"), "11, LOUGHBOROUGH DRIVE, BROUGHTON, MILTON KEYNES, MILTON KEYNES, MK10 7DZ"))
+      pricepaid should be(PricePaidData(274950, "2009-07-10", "11, LOUGHBOROUGH DRIVE, BROUGHTON, MILTON KEYNES, MILTON KEYNES, MK10 7DZ"))
     }
 
   }
